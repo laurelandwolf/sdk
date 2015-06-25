@@ -1,10 +1,10 @@
-// aeference gist https://gist.github.com/scottcorgan/a581668485381b39dfd0
+// reference gist https://gist.github.com/scottcorgan/a581668485381b39dfd0
 
-import {defaults, merge, cloneDeep, pick, omit} from 'lodash';
+import {merge} from 'lodash';
 
-import Api from './api';
+import api from './api';
 
-export function initApi (globalSpec = {}) {
+export default function sdk (globalSpec = {}) {
 
   let defaultSpec = {
     origin: '',
@@ -15,8 +15,8 @@ export function initApi (globalSpec = {}) {
   };
   let configuredSpec = merge(defaultSpec, globalSpec);
 
-  return function api (instanceSpec = {}) {
+  return function (instanceSpec = {}) {
 
-    return new Api(merge(configuredSpec, instanceSpec));
+    return api(merge(configuredSpec, instanceSpec));
   };
 }

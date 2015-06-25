@@ -1,19 +1,16 @@
 import 'whatwg-fetch';
 import {omit, merge, pick} from 'lodash';
 
-class Request {
+function request (spec = {}) {
 
-  constructor (spec = {}) {
+  let origin = spec.origin;
+  let config = omit(spec, 'origin');
 
-    this.origin = spec.origin;
-    this.spec = omit(spec, 'origin');
-  }
-
-  fetch (url, options) {
+  function httpRequest (url, options) {
 
     return new Promise((resolve, reject) => {
 
-      fetch(this.origin + url, merge(this.spec, options))
+      fetch(origin + url, merge(config, options))
         .then((response) => {
 
           response.json().then((body) => {
@@ -30,39 +27,48 @@ class Request {
     });
   }
 
-  get (url, options) {
+  function get (url, options) {
 
-    return this.fetch(url, merge({
+    return httpRequest(url, merge({
       method: 'GET'
     }, options));
   }
 
-  post (url, options) {
+  function post (url, options) {
 
-    return this.fetch(url, merge({
+    return httpRequest(url, merge({
       method: 'POST'
     }, options));
   }
 
-  put () {
-    return this.fetch(url, merge({
+  function put () {
+    return httpRequest(url, merge({
       method: 'PUT'
     }, options));
   }
 
-  patch () {
-    return this.fetch(url, merge({
+  function patch () {
+
+    return httpRequest(url, merge({
       method: 'PATCH'
     }, options));
   }
 
-  delete () {
+  function del () {
 
-    return this.fetch(url, merge({
+    return httpRequest(url, merge({
       method: 'DELETE'
     }, options));
   }
+
+  return {
+    fetch: httpRequest,
+    get,
+    post,
+    put,
+    patch,
+    'delete': del
+  };
 }
 
-
-export default Request;
+export default request;

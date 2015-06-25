@@ -1,17 +1,13 @@
-import Request from './request';
+import request from './request';
 import validate from './utils/validate';
 
-class Api extends Request {
+function api (spec = {}) {
 
-  constructor (spec = {}) {
+  let req = request(spec);
 
-    super(spec);
-    this.spec = spec;
-  }
+  function getProject () {
 
-  getProject () {
-
-    this.get('/projects')
+    req.get('/projects')
     .then((body) => {
 
       console.log('RESPONSE', body);
@@ -21,14 +17,14 @@ class Api extends Request {
       console.log('ERROR', err);
     });;
 
-    return this;
+    return {};
   }
 
-  createProject (attributes) {
+  function createProject (attributes) {
 
     validate.attributes(attributes);
 
-    this.post('/projects', {
+    req.post('/projects', {
       body: JSON.stringify({
         data: {
           type: 'project',
@@ -37,8 +33,13 @@ class Api extends Request {
       })
     })
 
-    return this;
+    return {};
   }
+
+  return {
+    getProject,
+    createProject
+  };
 }
 
-export default Api;
+export default api;

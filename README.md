@@ -1,6 +1,6 @@
 # Laurel and Wolf SDK
 
-SDK for Laurel and Wolf API 
+SDK for Laurel and Wolf API
 
 ## Install
 
@@ -17,12 +17,12 @@ import sdk from 'lw-sdk';
 let api = sdk({
 	origin: 'https://api.somewhere.com',
 	headers: {
-		'michael': 'scarn'	
+		'michael': 'scarn'
 	}
 });
 
 async function allProjects () {
-	
+
 	try {
 		let res = await api().getProjects();
 		// Do something with res.body;

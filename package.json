@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
-     "test": "karma run",
-     "start-test-server": "karma start"
+    "test": "karma run",
+    "start-test-server": "karma start"
   },
   "author": "Laurel and Wolf",
   "license": "ISC",
