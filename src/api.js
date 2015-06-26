@@ -1,5 +1,5 @@
 import request from './request';
-import validate from './utils/validate';
+import validate from './validate';
 
 function api (config = {}) {
 
