@@ -6,7 +6,8 @@
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
     "test": "karma run",
-    "start-test-server": "karma start"
+    "start-test-server": "karma start & lw lint src/ --watch",
+    "lint": "lw lint src"
   },
   "author": "Laurel and Wolf",
   "license": "ISC",
@@ -15,7 +16,6 @@
     "browserify": "^10.2.4",
     "chai": "^3.0.0",
     "eslint": "^0.23.0",
-    "eslint-plugin-lw": "file:build/eslint-plugins",
     "eslint-plugin-react": "^2.5.2",
     "karma": "^0.12.37",
     "karma-browserify": "^4.2.1",
@@ -25,10 +25,13 @@
     "karma-mocha-reporter": "^1.0.2",
     "karma-source-map-support": "^1.0.0",
     "karma-sourcemap-loader": "^0.3.5",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "lw-build": "laurelandwolf/build"
   },
   "dependencies": {
+    "babel-eslint": "^3.1.18",
     "lodash": "^3.9.3",
+    "lw-build": "laurelandwolf/build",
     "whatwg-fetch": "^0.9.0"
   },
   "browserify": {

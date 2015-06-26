@@ -41,20 +41,21 @@ function request (spec = {}) {
     }, options));
   }
 
-  function put () {
+  function put (url, options) {
+
     return httpRequest(url, merge({
       method: 'PUT'
     }, options));
   }
 
-  function patch () {
+  function patch (url, options) {
 
     return httpRequest(url, merge({
       method: 'PATCH'
     }, options));
   }
 
-  function del () {
+  function del (url, options) {
 
     return httpRequest(url, merge({
       method: 'DELETE'

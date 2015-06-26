@@ -15,7 +15,7 @@ function api (spec = {}) {
     .catch((err) => {
 
       console.log('ERROR', err);
-    });;
+    });
 
     return {};
   }
@@ -31,7 +31,7 @@ function api (spec = {}) {
           attributes
         }
       })
-    })
+    });
 
     return {};
   }
