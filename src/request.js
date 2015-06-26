@@ -3,14 +3,17 @@ import {omit, merge, pick} from 'lodash';
 
 function request (spec = {}) {
 
-  let origin = spec.origin;
-  let config = omit(spec, 'origin');
+  let origin = spec.origin || '';
+  let config = omit(spec, 'origin', 'fetch');
+
+  // HACK: Custom fetch for testing, or other things
+  let fetchFn = spec.fetch || fetch;
 
   function httpRequest (url, options) {
 
     return new Promise((resolve, reject) => {
 
-      fetch(origin + url, merge(config, options))
+      fetchFn(origin + url, merge(config, options))
         .then((response) => {
 
           response.json().then((body) => {

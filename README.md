@@ -46,10 +46,10 @@ async function allProjects () {
 
 ## Run Tests
 
+All tests get run in PhantomJS locally
+
 ```
 git clone git@github.com:laurelandwolf/sdk.git sdk && cd sdk
 npm install
-npm run start-test-server
+npm test
 ```
-
-In a different terminal window run `npm test` each time you want to run tests
