@@ -7,7 +7,7 @@ function request (spec = {}) {
   let config = omit(spec, 'origin', 'fetch');
 
   // HACK: Custom fetch for testing, or other things
-  let fetchFn = spec.fetch || fetch;
+  let fetchFn = spec.mockFetch || fetch;
 
   function httpRequest (url, options) {
 

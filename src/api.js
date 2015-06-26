@@ -1,23 +1,13 @@
 import request from './request';
 import validate from './utils/validate';
 
-function api (spec = {}) {
+function api (config = {}) {
 
-  let req = request(spec);
+  let req = request(config);
 
-  function getProject () {
+  function getProjects () {
 
-    req.get('/projects')
-    .then((body) => {
-
-      console.log('RESPONSE', body);
-    })
-    .catch((err) => {
-
-      console.log('ERROR', err);
-    });
-
-    return {};
+    return req.get('/projects');
   }
 
   function createProject (attributes) {
@@ -37,7 +27,8 @@ function api (spec = {}) {
   }
 
   return {
-    getProject,
+    config,
+    getProjects,
     createProject
   };
 }

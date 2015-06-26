@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
-    "test": "mochify --reporter spec",
+    "test": "npm run lint && mochify --reporter spec",
     "lint": "lw lint src"
   },
   "author": "Laurel and Wolf",

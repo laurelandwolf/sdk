@@ -1,4 +1,3 @@
-import 'babelify/polyfill';
 import {expect} from 'chai';
 
 import request from '../src/request';
@@ -12,7 +11,7 @@ describe('request', () => {
 
     return request({
       origin: ORIGIN,
-      fetch: mockFetch()
+      mockFetch: mockFetch()
     }).get('/test')
       .then((res) => {
 
@@ -26,7 +25,7 @@ describe('request', () => {
       headers: {
         custom : 'header'
       },
-      fetch: mockFetch()
+      mockFetch: mockFetch()
     }).get('/test')
       .then((res) => {
 
@@ -39,7 +38,7 @@ describe('request', () => {
   it('bare fetch', () => {
 
     return request({
-      fetch: mockFetch()
+      mockFetch: mockFetch()
     }).fetch('/test', {
       method: 'GET',
       headers: {
@@ -62,7 +61,7 @@ describe('request', () => {
       it(method, () => {
 
         let req = request({
-          fetch: mockFetch()
+          mockFetch: mockFetch()
         });
 
         return req[method.toLowerCase()]('/test')
