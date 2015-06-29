@@ -2,14 +2,7 @@ import {map, forEach, pick} from 'lodash';
 
 import format from '../format';
 import defineRelationships from './define-relationships';
-
-function serializeRequest (camelData) {
-
-  let picked = pick(camelData, 'type', 'id', 'attributs', 'relationships');
-  let resource = format.snakeCase(picked);
-
-  return resource;
-}
+import formatRequestRelationships from './format-request-relationships';
 
 function serializeResponse (originalResponse) {
 
@@ -54,19 +47,29 @@ function serializeResponse (originalResponse) {
   });
 }
 
+function serializeRequest (input) {
+
+  let picked = pick(input, 'type', 'id', 'attributes', 'relationships');
+  let payload = {
+    type: picked.type
+  };
+
+  if (picked.id) {
+    payload.id = picked.id;
+  }
+
+  if (picked.attributes) {
+    payload.attributes = picked.attributes;
+  }
+
+  if (picked.relationships) {
+    payload.relationships = formatRequestRelationships(picked.relationships);
+  }
+
+  return format.snakeCase(payload);
+}
+
 export default {
-  request: serializeRequest,
-  response: serializeResponse
+  response: serializeResponse,
+  request: serializeRequest
 };
-
-
-
-
-
-
-// TODO: remove this after dev
-// import util from 'util';
-// function inspect (data) {
-//
-//   console.log(util.inspect(data, {showHidden: false, depth: null}));
-// }

@@ -56,6 +56,79 @@ describe('serialize', () => {
 
   describe('request', () => {
 
+    let req;
 
+    beforeEach(() => {
+
+      req = serialize.request(mockRequestInput());
+    })
+
+    it('includes includes expected keys', () => {
+
+      expect(req).to.include.keys('id', 'type', 'attributes', 'relationships');
+      expect(req.meh).to.not.exist;
+    });
+
+    it('converts to snake case', () => {
+
+      expect(req.attributes).to.include.key('some-value');
+    });
+
+    it('formats single relationship', () => {
+
+      expect(req.relationships.author).to.eql({
+        data: {type: 'people', id: 123}
+      });
+    });
+
+    it('formats relationship with multiple values', () => {
+
+      expect(req.relationships.tags).to.eql({
+        data: [
+          {type: 'tags', id: 1},
+          {type: 'tags', id: 2}
+        ]
+      });
+    });
+
+    it('formats shorthand single relationships', () => {
+
+      expect(req.relationships.project).to.eql({
+        data: {type: 'projects', id: 123}
+      });
+    });
+
+    it('formats short with multiple relationships', () => {
+
+      expect(req.relationships.friends).to.eql({
+        data: [
+          {type: 'friends', id: 1},
+          {type: 'friends', id: 2},
+          {type: 'friends', id: 3}
+        ]
+      });
+    });
   });
 });
+
+function mockRequestInput () {
+
+  return {
+    meh: 'meh',
+    id: 123,
+    type: 'comments',
+    attributes: {
+      name: 'Scott',
+      someValue: 'value'
+    },
+    relationships: {
+      author: {type: 'people', id: 123},
+      tags: [
+        {type: 'tags', id: 1},
+        {type: 'tags', id: 2}
+      ],
+      project: 123,
+      friends: [1, 2, 3]
+    }
+  };
+}
