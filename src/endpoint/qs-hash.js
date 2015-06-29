@@ -5,7 +5,7 @@ function qshash () {
 
   let list = {};
 
-  function parseFields(fields, fieldsMap) {
+  function parseFields (fields, fieldsMap) {
 
     forEach(fieldsMap, (val, key) => {
 
@@ -25,7 +25,7 @@ function qshash () {
 
       return map(list, (values, scope) => {
 
-        return `fields[${scope}]=${values.join(',')}`
+        return `fields[${scope}]=${values.join(',')}`;
       }).join('&');
     },
 

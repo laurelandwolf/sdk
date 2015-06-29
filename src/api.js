@@ -5,11 +5,6 @@ import resource from './resource';
 
 function api (config = {}) {
 
-  // function getProjects () {
-  //
-  //
-  // }
-
   // function createProject (attributes) {
   //
   //   validate.attributes(attributes);
@@ -27,17 +22,17 @@ function api (config = {}) {
   // }
 
   let projects = resource({
-    name: 'projects',
+    name: 'projects'
 
     // // optional
     // singular: 'project',
     // plural: 'projects',
     // endpoint: '/projects',
     // baseUrl: '/some-route'
-  });
+  }, config);
 
   return assign(
-    config,
+    {config},
     projects
   );
 }

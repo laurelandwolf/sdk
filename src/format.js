@@ -1,10 +1,22 @@
 import _, {
   map,
+  startsWith,
+  trimLeft,
   isObject as isObjectLoose,
   isString,
   camelCase as toCamelCase,
   kebabCase
 } from 'lodash';
+
+function startsWithDash (str) {
+
+  return startsWith(str, '-');
+}
+
+function removeFirstDash (str) {
+
+  return trimLeft(str, '-');
+}
 
 function isObject (data) {
 
@@ -81,7 +93,13 @@ function snakeCase (data) {
   }
 
   if (isString(data)) {
-    return kebabCase(data);
+
+    if (startsWithDash(data)) {
+      return `-${kebabCase(removeFirstDash(data))}`;
+    }
+    else {
+      return kebabCase(data);
+    }
   }
 
   if (isObject(data)) {

@@ -1,5 +1,7 @@
 import _, {isString, map} from 'lodash';
 
+import {snakeCase} from '../format';
+
 function qslist (name) {
 
   let list = [];
@@ -10,12 +12,12 @@ function qslist (name) {
       .map((item) => {
 
         if (isString(item)) {
-          return item;
+          return snakeCase(item);
         }
 
         return map(item, (vals, field) => {
 
-          return map(vals, (val) => `${field}.${val}`)
+          return map(vals, (val) => `${snakeCase(field)}.${snakeCase(val)}`);
         });
       })
       .flattenDeep()
@@ -32,7 +34,7 @@ function qslist (name) {
 
     stringify () {
 
-      return `${name}=${list.join(',')}`;
+      return `${snakeCase(name)}=${list.join(',')}`;
     },
 
     count () {

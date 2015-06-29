@@ -98,6 +98,12 @@ describe('format', () => {
         }
       });
     });
+
+    it('keeps leading "-"', () => {
+
+      let cased = format.snakeCase('-createdAt');
+      expect(cased).to.equal('-created-at');
+    });
   });
 
 });
