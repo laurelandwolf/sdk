@@ -1,5 +1,5 @@
 import request from './request';
-import validate from './validate';
+// import validate from './validate';
 
 function api (config = {}) {
 
@@ -10,26 +10,26 @@ function api (config = {}) {
     return req.get('/projects');
   }
 
-  function createProject (attributes) {
-
-    validate.attributes(attributes);
-
-    req.post('/projects', {
-      body: JSON.stringify({
-        data: {
-          type: 'project',
-          attributes
-        }
-      })
-    });
-
-    return {};
-  }
+  // function createProject (attributes) {
+  //
+  //   validate.attributes(attributes);
+  //
+  //   req.post('/projects', {
+  //     body: JSON.stringify({
+  //       data: {
+  //         type: 'project',
+  //         attributes
+  //       }
+  //     })
+  //   });
+  //
+  //   return {};
+  // }
 
   return {
     config,
-    getProjects,
-    createProject
+    getProjects
+    // createProject
   };
 }
 
