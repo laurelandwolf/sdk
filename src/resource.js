@@ -5,12 +5,12 @@ import endpoint from './endpoint';
 
 function resource (spec, apiConfig = {}) {
 
-  let {name} = spec;
+  let {type} = spec;
 
   // Get All
   function getAll () {
 
-    let uri = `/${name}`;
+    let uri = `/${type}`;
 
     return endpoint({
       uri,
@@ -20,7 +20,7 @@ function resource (spec, apiConfig = {}) {
 
   function getOne (id) {
 
-    let uri = `/${name}/${id}`;
+    let uri = `/${type}/${id}`;
 
     return endpoint({
       uri,
@@ -28,9 +28,26 @@ function resource (spec, apiConfig = {}) {
     }, apiConfig);
   }
 
+  function create (attributes) {
+
+      let uri = `/${type}`;
+
+      let payload = {
+        type,
+        attributes,
+      };
+
+      return endpoint({
+        uri,
+        method: 'POST',
+        payload
+      }, apiConfig);
+  }
+
   return {
-    [`get${capitalize(pluralize(name))}`]: getAll,
-    [`get${capitalize(pluralize(name, 1))}`]: getOne
+    [`get${capitalize(pluralize(type))}`]: getAll,
+    [`get${capitalize(pluralize(type, 1))}`]: getOne,
+    [`create${capitalize(pluralize(type, 1))}`]: create
   };
 }
 

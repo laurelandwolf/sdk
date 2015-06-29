@@ -22,13 +22,14 @@ function api (config = {}) {
   // }
 
   let projects = resource({
-    name: 'projects'
+    type: 'projects' // TODO: this should be the name of the uri segement
+                     // If we need a custom uri segment with a different name
+                     // we should be able to define it
 
     // // optional
     // singular: 'project',
     // plural: 'projects',
-    // endpoint: '/projects',
-    // baseUrl: '/some-route'
+    // uri: 'projects' <~~~~~~~~~~~ use that to override name
   }, config);
 
   return assign(

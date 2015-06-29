@@ -1,11 +1,12 @@
-import {defer} from 'lodash';
+import {defer, merge, isEmpty} from 'lodash';
 
 import request from '../request';
 // import validate from '../validate';
 import qshash from './qs-hash';
 import qslist from './qs-list';
+import serialize from '../serialize';
 
-function endpoint ({uri, method}, apiConfig) {
+function endpoint ({uri, method = 'GET', payload}, apiConfig) {
 
   let req = request(apiConfig);
   let includes = qslist('include');
@@ -37,33 +38,62 @@ function endpoint ({uri, method}, apiConfig) {
     return uri;
   }
 
+  // TODO: move this so it's only available
+  // to the requests that need it
+  let relationships = {};
+
   let promise = new Promise((resolve, reject) => {
 
     defer(() => {
 
-      req.get(renderEndpointUri())
+      let requestUri = renderEndpointUri();
+
+      // Get relationships in there!
+      if (!isEmpty(relationships)) {
+        payload = merge(payload || {}, {relationships})
+      }
+
+      // Serialize request
+      if (!isEmpty(payload)) {
+        payload = serialize.request(payload);
+      }
+
+      req[method.toLowerCase()](requestUri, payload)
+        // .then(serialize.response) // TODO: make this work and test it
         .then(resolve)
         .catch(reject);
     });
   });
 
-  promise.includes = (...args) => {
+  // Chainable methods for get requests
+  if (method.toLowerCase() === 'get') {
+    promise.includes = (...args) => {
 
-    includes.push(...args);
-    return promise;
-  };
+      includes.push(...args);
+      return promise;
+    };
 
-  promise.fields = (newFields) => {
+    promise.fields = (newFields) => {
 
-    fields.add(newFields);
-    return promise;
-  };
+      fields.add(newFields);
+      return promise;
+    };
 
-  promise.sort = (...args) => {
+    promise.sort = (...args) => {
 
-    sort.push(...args);
-    return promise;
-  };
+      sort.push(...args);
+      return promise;
+    };
+  }
+
+  // Chainable methods for post requests
+  if (method.toLowerCase() === 'post') {
+    promise.relatedTo = (rels) => {
+
+      relationships = merge(relationships, rels);
+      return promise;
+    }
+  }
 
   return promise;
 }

@@ -1,5 +1,6 @@
 import 'babelify/polyfill';
-import {defaults} from 'lodash';
+
+import {defaults, pick} from 'lodash';
 
 export default function mockFetch (spec = {}) {
 
@@ -10,6 +11,7 @@ export default function mockFetch (spec = {}) {
   return function fetch (url, options) {
 
     let status = 200;
+    let payload = pick(options, 'type', 'id', 'attributes', 'relationships');
 
     return new Promise((resolve, reject) => {
 
@@ -20,6 +22,7 @@ export default function mockFetch (spec = {}) {
 
             res({
               url,
+              payload,
               method: options.method,
               status: config.status,
               headers: options.headers
