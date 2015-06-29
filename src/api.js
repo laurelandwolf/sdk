@@ -29,11 +29,11 @@ function api (config = {}) {
   let projects = resource({
     name: 'projects',
 
-    // optional
-    singular: 'project',
-    plural: 'projects',
-    endpoint: '/projects',
-    baseUrl: '/some-route'
+    // // optional
+    // singular: 'project',
+    // plural: 'projects',
+    // endpoint: '/projects',
+    // baseUrl: '/some-route'
   });
 
   return assign(

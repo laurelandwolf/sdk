@@ -1,16 +1,11 @@
-import _, {
-  defer,
-  capitalize,
-  isString,
-  map,
-  union,
-  forEach
-} from 'lodash';
+import _, {defer, capitalize} from 'lodash';
 import pluralize from 'pluralize';
 import asArray from 'as-array';
 
 import request from '../request';
 import validate from '../validate';
+import qshash from './qs-hash';
+import qslist from './qs-list';
 
 function resource (spec, config = {}) {
 
@@ -22,33 +17,48 @@ function resource (spec, config = {}) {
     // get all
     [`get${capitalize(pluralize(name))}`] () {
 
-      let includes = [];
-      let fields = {};
+      let includes = qslist('include');
+      let sort = qslist('sort');
+      let fields = qshash();
 
       let resource = new Promise((resolve, reject) => {
 
         defer(() => {
 
-          // Build request here
+          let querystring = [];
 
-          resolve(fields);
+          if (includes.count() > 0) {
+            querystring.push(includes.stringify());
+          }
+
+          if (fields.count() > 0) {
+            querystring.push(fields.stringify());
+          }
+
+          //
+          if (sort.count() > 0) {
+            querystring.push(sort.stringify());
+          }
+
+          resolve(`?${querystring.join('&')}`);
         });
       });
 
       resource.includes = (...args) => {
 
-        includes = parseIncludes(includes, ...args);
+        includes.push(...args);
         return resource;
       };
 
       resource.fields = (newFields) => {
 
-        fields = parseFields(fields, newFields);
+        fields.add(newFields);
         return resource;
       };
 
-      resource.sort = () => {
+      resource.sort = (...args) => {
 
+        sort.push(...args);
         return resource;
       };
 
@@ -63,36 +73,6 @@ function resource (spec, config = {}) {
   };
 
   return methods;
-}
-
-function parseIncludes (includes, ...args) {
-
-  let newIncludes = _(args)
-    .map((item) => {
-
-      if (isString(item)) {
-        return item;
-      }
-
-      return map(item, (vals, field) => {
-
-        return map(vals, (val) => `${field}.${val}`)
-      });
-    })
-    .flattenDeep()
-    .value();
-
-  return includes.concat(newIncludes);
-}
-
-function parseFields(fields, fieldsMap) {
-
-  forEach(fieldsMap, (val, key) => {
-
-    fields[key] = union(fields[key], asArray(fieldsMap[key]));
-  });
-
-  return fields;
 }
 
 export default resource;
