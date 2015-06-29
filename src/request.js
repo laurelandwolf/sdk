@@ -1,4 +1,3 @@
-import 'whatwg-fetch';
 import {omit, merge, pick} from 'lodash';
 
 function request (spec = {}) {

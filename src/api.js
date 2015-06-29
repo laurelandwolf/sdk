@@ -1,14 +1,14 @@
-import request from './request';
+import {assign} from 'lodash';
+
+import resource from './resource';
 // import validate from './validate';
 
 function api (config = {}) {
 
-  let req = request(config);
-
-  function getProjects () {
-
-    return req.get('/projects');
-  }
+  // function getProjects () {
+  //
+  //
+  // }
 
   // function createProject (attributes) {
   //
@@ -26,11 +26,20 @@ function api (config = {}) {
   //   return {};
   // }
 
-  return {
+  let projects = resource({
+    name: 'projects',
+
+    // optional
+    singular: 'project',
+    plural: 'projects',
+    endpoint: '/projects',
+    baseUrl: '/some-route'
+  });
+
+  return assign(
     config,
-    getProjects
-    // createProject
-  };
+    projects
+  );
 }
 
 export default api;

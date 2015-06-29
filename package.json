@@ -19,6 +19,7 @@
     "mochify": "^2.10.0"
   },
   "dependencies": {
+    "as-array": "^1.0.0",
     "lodash": "^3.9.3",
     "pluralize": "^1.1.2",
     "whatwg-fetch": "^0.9.0"
