@@ -50,7 +50,7 @@ function endpoint ({uri, method = 'GET', payload}, apiConfig) {
 
       // Get relationships in there!
       if (!isEmpty(relationships)) {
-        payload = merge(payload || {}, {relationships})
+        payload = merge(payload || {}, {relationships});
       }
 
       // Serialize request
@@ -59,7 +59,7 @@ function endpoint ({uri, method = 'GET', payload}, apiConfig) {
       }
 
       req[method.toLowerCase()](requestUri, payload)
-        // .then(serialize.response) // TODO: make this work and test it
+        .then((body) => serialize.response(body))
         .then(resolve)
         .catch(reject);
     });
@@ -92,7 +92,7 @@ function endpoint ({uri, method = 'GET', payload}, apiConfig) {
 
       relationships = merge(relationships, rels);
       return promise;
-    }
+    };
   }
 
   return promise;

@@ -5,19 +5,17 @@ function request (spec = {}) {
   let origin = spec.origin || '';
   let config = omit(spec, 'origin', 'fetch');
 
-  // HACK: Custom fetch for testing, or other things
-  let fetchFn = spec.mockFetch || fetch;
-
   function httpRequest (url, options) {
 
     return new Promise((resolve, reject) => {
 
-      fetchFn(origin + url, merge(config, options))
+      fetch(origin + url, merge(config, options))
         .then((response) => {
 
           response.json().then((body) => {
 
             if (response.status < 400) {
+              // TODO: need to be able to pass the response, headers, etc back as well
               resolve(body);
             }
             else {

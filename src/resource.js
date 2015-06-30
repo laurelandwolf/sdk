@@ -30,18 +30,18 @@ function resource (spec, apiConfig = {}) {
 
   function create (attributes) {
 
-      let uri = `/${type}`;
+    let uri = `/${type}`;
 
-      let payload = {
-        type,
-        attributes,
-      };
+    let payload = {
+      type,
+      attributes
+    };
 
-      return endpoint({
-        uri,
-        method: 'POST',
-        payload
-      }, apiConfig);
+    return endpoint({
+      uri,
+      method: 'POST',
+      payload
+    }, apiConfig);
   }
 
   return {

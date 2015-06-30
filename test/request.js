@@ -1,21 +1,54 @@
 import {expect} from 'chai';
+import {omit} from 'lodash'
 
 import request from '../src/request';
-import mockFetch from './mock/fetch';
+
+import fetchMock from 'fetch-mock/client';
 
 let ORIGIN = 'https://api.laurelandwolf.com/v1.0';
 
 describe('request', () => {
 
+  let projects;
+  let payload;
+  let method;
+  let url;
+  let status;
+  let headers;
+
+  before(() => {
+
+    fetchMock.registerRoute([
+      {
+        name: 'test',
+        matcher: /\/test/,
+        response: (_url_, opts) => {
+
+          status = opts.status || 200;
+          headers = opts.headers;
+          url = _url_;
+          method = opts.method;
+          payload = omit(opts, 'method');
+          return {};
+        }
+      }
+    ]);
+
+    fetchMock.mock({
+      routes: ['test']
+    });
+  });
+
+  after(() => fetchMock.restore());
+
   it('custom origin', () => {
 
     return request({
-      origin: ORIGIN,
-      mockFetch: mockFetch()
+      origin: ORIGIN
     }).get('/test')
       .then((res) => {
 
-        expect(res.url).to.equal(ORIGIN + '/test');
+        expect(url).to.equal(ORIGIN + '/test');
       });
   });
 
@@ -24,12 +57,11 @@ describe('request', () => {
     return request({
       headers: {
         custom : 'header'
-      },
-      mockFetch: mockFetch()
+      }
     }).get('/test')
       .then((res) => {
 
-        expect(res.headers).to.eql({
+        expect(headers).to.eql({
           custom: 'header'
         });
       });
@@ -37,9 +69,7 @@ describe('request', () => {
 
   it('bare fetch', () => {
 
-    return request({
-      mockFetch: mockFetch()
-    }).fetch('/test', {
+    return request().fetch('/test', {
       method: 'GET',
       headers: {
         custom : 'header'
@@ -47,8 +77,8 @@ describe('request', () => {
     })
       .then((res) => {
 
-        expect(res.method).to.equal('GET');
-        expect(res.headers).to.eql({
+        expect(method).to.equal('GET');
+        expect(headers).to.eql({
           custom: 'header'
         });
       });
@@ -60,14 +90,12 @@ describe('request', () => {
 
       it(method, () => {
 
-        let req = request({
-          mockFetch: mockFetch()
-        });
+        let req = request();
 
         return req[method.toLowerCase()]('/test')
           .then((res) => {
 
-            expect(res.method).to.equal(method);
+            expect(method).to.equal(method);
           });
       });
     });

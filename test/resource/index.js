@@ -1,18 +1,45 @@
+
 import {expect} from 'chai';
+import {omit} from 'lodash';
 
 import resource from '../../src/resource';
-import mockFetch from '../mock/fetch';
+
+import fetchMock from 'fetch-mock/client';
 
 describe('resource', () => {
 
   let projects;
+  let payload;
+  let method;
+  let url;
+
+  before(() => {
+
+    fetchMock.registerRoute([
+      {
+        name: 'projects',
+        matcher: /\/projects.*/,
+        response: (_url_, opts) => {
+
+          url = _url_;
+          method = opts.method;
+          payload = omit(opts, 'method');
+          return {};
+        }
+      }
+    ]);
+
+    fetchMock.mock({
+      routes: ['projects']
+    });
+  });
+
+  after(() => fetchMock.restore());
 
   beforeEach(() => {
 
     projects = resource({
       type: 'projects'
-    }, {
-      mockFetch: mockFetch()
     });
   })
 
@@ -21,7 +48,7 @@ describe('resource', () => {
     return projects.getProjects()
       .then((res) => {
 
-        expect(res.url).to.equal('/projects');
+        expect(url).to.equal('/projects');
       });
   });
 
@@ -32,8 +59,8 @@ describe('resource', () => {
       return projects.getProjects()
         .then((res) => {
 
-          expect(res.url).to.equal('/projects');
-          expect(res.method).to.equal('GET');
+          expect(url).to.equal('/projects');
+          expect(method).to.equal('GET');
         });
     });
 
@@ -44,7 +71,7 @@ describe('resource', () => {
         .includes('rooms', 'friends')
         .then((res) => {
 
-          expect(res.url).to.equal('/projects?include=rooms,friends');
+          expect(url).to.equal('/projects?include=rooms,friends');
         });
     });
 
@@ -55,7 +82,7 @@ describe('resource', () => {
         .fields({'rooms': ['title', 'location']})
         .then((res) => {
 
-          expect(res.url).to.equal('/projects?fields[rooms]=title,location');
+          expect(url).to.equal('/projects?fields[rooms]=title,location');
         });
     });
 
@@ -66,7 +93,7 @@ describe('resource', () => {
         .sort('-createdAt', 'updatedAt')
         .then((res) => {
 
-          expect(res.url).to.equal('/projects?sort=-created-at,updated-at');
+          expect(url).to.equal('/projects?sort=-created-at,updated-at');
         });
     });
 
@@ -81,8 +108,8 @@ describe('resource', () => {
         .getProject(123)
         .then((res) => {
 
-          expect(res.url).to.equal('/projects/123');
-          expect(res.method).to.equal('GET');
+          expect(url).to.equal('/projects/123');
+          expect(method).to.equal('GET');
         });
     });
 
@@ -93,7 +120,7 @@ describe('resource', () => {
         .includes('rooms', 'friends')
         .then((res) => {
 
-          expect(res.url).to.equal('/projects/123?include=rooms,friends');
+          expect(url).to.equal('/projects/123?include=rooms,friends');
         });
     });
 
@@ -104,7 +131,7 @@ describe('resource', () => {
         .fields({'rooms': ['title', 'location']})
         .then((res) => {
 
-          expect(res.url).to.equal('/projects/123?fields[rooms]=title,location');
+          expect(url).to.equal('/projects/123?fields[rooms]=title,location');
         });
     });
 
@@ -115,7 +142,7 @@ describe('resource', () => {
         .sort('-createdAt', 'updatedAt')
         .then((res) => {
 
-          expect(res.url).to.equal('/projects/123?sort=-created-at,updated-at');
+          expect(url).to.equal('/projects/123?sort=-created-at,updated-at');
         });
     });
 
@@ -132,9 +159,9 @@ describe('resource', () => {
       })
         .then((res) => {
 
-          expect(res.url).to.equal('/projects');
-          expect(res.method).to.equal('POST');
-          expect(res.payload).to.eql({
+          expect(fetchMock.called('projects')).to.equal(true);
+          expect(method).to.equal('POST');
+          expect(payload).to.eql({
             type: 'projects',
             attributes: {
               title: 'My Project',
@@ -155,7 +182,7 @@ describe('resource', () => {
         })
           .then((res) => {
 
-            expect(res.payload).to.eql({
+            expect(payload).to.eql({
               type: 'projects',
               attributes: {
                 title: 'My Project'

@@ -1,9 +1,41 @@
 import {expect} from 'chai';
+import {omit} from 'lodash';
 
 import sdk from '../src';
-import mockFetch from './mock/fetch';
+
+import fetchMock from 'fetch-mock/client';
 
 describe('sdk', () => {
+
+  let projects;
+  let payload;
+  let method;
+  let url;
+  let status;
+
+  before(() => {
+
+    fetchMock.registerRoute([
+      {
+        name: 'projects',
+        matcher: /\/projects.*/,
+        response: (_url_, opts) => {
+
+          status = opts.status || 200;
+          url = _url_;
+          method = opts.method;
+          payload = omit(opts, 'method');
+          return {};
+        }
+      }
+    ]);
+
+    fetchMock.mock({
+      routes: ['projects']
+    });
+  });
+
+  after(() => fetchMock.restore());
 
   it('instance', () => {
 
@@ -13,16 +45,14 @@ describe('sdk', () => {
 
   it('request', () => {
 
-    let api = sdk({
-      mockFetch: mockFetch()
-    });
+    let api = sdk();
 
     return api()
       .getProjects()
         .then((res) => {
 
-          expect(res.method).to.equal('GET');
-          expect(res.status).to.equal(200);
+          expect(method).to.equal('GET');
+          expect(status).to.equal(200);
         });
   });
 
