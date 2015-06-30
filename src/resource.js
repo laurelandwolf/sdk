@@ -6,11 +6,10 @@ import endpoint from './endpoint';
 function resource (spec, apiConfig = {}) {
 
   let {type} = spec;
+  let uri = `/${type}`;
 
   // Get All
   function getAll () {
-
-    let uri = `/${type}`;
 
     return endpoint({
       uri,
@@ -20,17 +19,13 @@ function resource (spec, apiConfig = {}) {
 
   function getOne (id) {
 
-    let uri = `/${type}/${id}`;
-
     return endpoint({
-      uri,
+      uri: `${uri}/${id}`,
       method: 'GET'
     }, apiConfig);
   }
 
   function create (attributes) {
-
-    let uri = `/${type}`;
 
     let payload = {
       type,
@@ -44,10 +39,35 @@ function resource (spec, apiConfig = {}) {
     }, apiConfig);
   }
 
+  function update (id, attributes) {
+
+    let payload = {
+      type,
+      id,
+      attributes
+    };
+
+    return endpoint({
+      uri: `${uri}/${id}`,
+      method: 'PATCH',
+      payload
+    });
+  }
+
+  function del (id) {
+
+    return endpoint({
+      uri: `${uri}/${id}`,
+      method: 'DELETE'
+    });
+  }
+
   return {
     [`get${capitalize(pluralize(type))}`]: getAll,
     [`get${capitalize(pluralize(type, 1))}`]: getOne,
-    [`create${capitalize(pluralize(type, 1))}`]: create
+    [`create${capitalize(pluralize(type, 1))}`]: create,
+    [`update${capitalize(pluralize(type, 1))}`]: update,
+    [`delete${capitalize(pluralize(type, 1))}`]: del
   };
 }
 

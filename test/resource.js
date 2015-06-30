@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {omit} from 'lodash';
 
-import resource from '../../src/resource';
+import resource from '../src/resource';
 
 import fetchMock from 'fetch-mock/client';
 
@@ -23,6 +23,8 @@ describe('resource', () => {
           url = _url_;
           method = opts.method;
           payload = omit(opts, 'method');
+
+          // Response body
           return {};
         }
       }
@@ -40,7 +42,15 @@ describe('resource', () => {
     projects = resource({
       type: 'projects'
     });
-  })
+  });
+
+  afterEach(() => {
+
+    projects = undefined;
+    payload = undefined;
+    method = undefined;
+    url = undefined;
+  });
 
   it('excludes "?" if no query string', () => {
 
@@ -145,10 +155,23 @@ describe('resource', () => {
         });
     });
 
+    // TODO: move this into testing the endpoint.js function
     it('serializes response');
   });
 
-  describe('creating one', () => {
+  describe('create', () => {
+
+    it('uses POST method', () => {
+
+      return projects.createProject({
+        title: 'My Project',
+        location: 'Room'
+      })
+        .then(() => {
+
+          expect(method).to.equal('POST');
+        });
+    });
 
     it('new', () => {
 
@@ -158,8 +181,6 @@ describe('resource', () => {
       })
         .then((res) => {
 
-          expect(fetchMock.called('projects')).to.equal(true);
-          expect(method).to.equal('POST');
           expect(payload).to.eql({
             type: 'projects',
             attributes: {
@@ -177,7 +198,11 @@ describe('resource', () => {
           title: 'My Project'
         })
         .relatedTo({
-          user: 123
+          user: 123,
+          something: {
+            type: 'test',
+            id: 456
+          }
         })
           .then((res) => {
 
@@ -192,10 +217,89 @@ describe('resource', () => {
                     type: 'users',
                     id: 123
                   }
+                },
+                something: {
+                  data: {
+                    type: 'test',
+                    id: 456
+                  }
                 }
               }
             });
           });
+    });
+  });
+
+  describe('updating', () => {
+
+    it('uses PATCH method', () => {
+
+      return projects.updateProject(1, {}).then((res) => {
+
+        expect(method).to.equal('PATCH');
+      });
+    });
+
+    it('updates', () => {
+
+      return projects.updateProject(1, {
+        name: 'test'
+      })
+        .then((res) => {
+
+          expect(payload).to.eql({
+            type: 'projects',
+            id: 1,
+            attributes: {
+              name: 'test'
+            }
+          });
+        });
+    });
+
+    it('with relationships', () => {
+
+      return projects
+        .updateProject(1)
+        .relatedTo({
+          user: 2
+        })
+          .then(() => {
+
+            expect(payload).to.eql({
+              type: 'projects',
+              id: 1,
+              relationships: {
+                user: {
+                  data: {
+                    type: 'users',
+                    id: 2
+                  }
+                }
+              }
+            });
+          });
+    });
+  });
+
+  describe('deleting', () => {
+
+    it('uses DELETE method', () => {
+
+      return projects.deleteProject(1)
+        .then(() => {
+
+          expect(method).to.equal('DELETE');
+        });
+    });
+
+    it('deletes', () => {
+
+      return projects.deleteProject(1)
+        .then(() => {
+
+          expect(url).to.equal('/projects/1');
+        });
     });
   });
 });

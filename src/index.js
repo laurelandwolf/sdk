@@ -17,8 +17,10 @@ export default function sdk (globalSpec = {}) {
   };
   let configuredSpec = merge(defaultSpec, globalSpec);
 
-  return function (instanceSpec = {}) {
+  function apiFactory (instanceSpec = {}) {
 
     return api(merge(configuredSpec, instanceSpec));
   };
+
+  return apiFactory;
 }

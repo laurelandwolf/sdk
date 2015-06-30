@@ -88,7 +88,7 @@ function endpoint ({uri, method = 'GET', payload}, apiConfig) {
   }
 
   // Chainable methods for post requests
-  if (method.toLowerCase() === 'post') {
+  if (method.toLowerCase() === 'post' || method.toLowerCase() === 'patch') {
     promise.relatedTo = (rels) => {
 
       relationships = merge(relationships, rels);
