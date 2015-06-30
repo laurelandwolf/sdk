@@ -20,7 +20,7 @@ export default function sdk (globalSpec = {}) {
   function apiFactory (instanceSpec = {}) {
 
     return api(merge(configuredSpec, instanceSpec));
-  };
+  }
 
   return apiFactory;
 }

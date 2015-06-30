@@ -7,7 +7,7 @@ import qshash from './qs-hash';
 import qslist from './qs-list';
 import serialize from '../serialize';
 
-function endpoint ({uri, method = 'GET', payload}, apiConfig) {
+function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
 
   let req = request(apiConfig);
   let includes = qslist('include');
@@ -39,8 +39,7 @@ function endpoint ({uri, method = 'GET', payload}, apiConfig) {
     return uri;
   }
 
-  // TODO: move this so it's only available
-  // to the requests that need it
+  // TODO: move this so it's only available to the requests that need it
   let relationships = {};
 
   let promise = new Promise((resolve, reject) => {
@@ -48,19 +47,24 @@ function endpoint ({uri, method = 'GET', payload}, apiConfig) {
     defer(() => {
 
       let requestUri = renderEndpointUri();
+      let payloadBody = {};
 
       // Get relationships in there!
       if (!isEmpty(relationships)) {
-        payload = merge(payload || {}, {relationships});
+        payloadBody = merge(payload || {}, {relationships});
       }
 
       // Serialize request
       if (!isEmpty(payload)) {
-        payload = serialize.request(payload);
+        payloadBody = serialize.request(payload);
       }
 
-      req[method.toLowerCase()](requestUri, payload)
-        .then((body) => serialize.response(body))
+      req[method.toLowerCase()](requestUri, payloadBody)
+        .then((res) => {
+
+          res.body = serialize.response(res.body);
+          return res;
+        })
         .then(resolve)
         .catch(reject);
     });

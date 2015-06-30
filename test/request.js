@@ -2,44 +2,23 @@ import {expect} from 'chai';
 import {omit} from 'lodash'
 
 import request from '../src/request';
-
-import fetchMock from 'fetch-mock/client';
+import mockFetch from './mock/fetch';
 
 let ORIGIN = 'https://api.laurelandwolf.com/v1.0';
 
 describe('request', () => {
 
-  let projects;
-  let payload;
-  let method;
-  let url;
-  let status;
-  let headers;
-
   before(() => {
 
-    fetchMock.registerRoute([
-      {
-        name: 'test',
-        matcher: /\/test/,
-        response: (_url_, opts) => {
-
-          status = opts.status || 200;
-          headers = opts.headers;
-          url = _url_;
-          method = opts.method;
-          payload = omit(opts, 'method');
-          return {};
+    mockFetch.mock({
+      response: {
+        headers: {
+          custom: 'header'
         }
       }
-    ]);
-
-    fetchMock.mock({
-      routes: ['test']
     });
   });
-
-  after(() => fetchMock.restore());
+  after(() => mockFetch.restore());
 
   it('custom origin', () => {
 
@@ -48,7 +27,8 @@ describe('request', () => {
     }).get('/test')
       .then((res) => {
 
-        expect(url).to.equal(ORIGIN + '/test');
+        let req = mockFetch.request();
+        expect(req.url).to.equal(ORIGIN + '/test');
       });
   });
 
@@ -61,7 +41,8 @@ describe('request', () => {
     }).get('/test')
       .then((res) => {
 
-        expect(headers).to.eql({
+        let req = mockFetch.request();
+        expect(req.headers).to.eql({
           custom: 'header'
         });
       });
@@ -77,8 +58,10 @@ describe('request', () => {
     })
       .then((res) => {
 
-        expect(method).to.equal('GET');
-        expect(headers).to.eql({
+        let req = mockFetch.request();
+
+        expect(req.method).to.equal('GET');
+        expect(req.headers).to.eql({
           custom: 'header'
         });
       });
@@ -95,8 +78,30 @@ describe('request', () => {
         return req[method.toLowerCase()]('/test')
           .then((res) => {
 
-            expect(method).to.equal(method);
+            let req = mockFetch.request();
+            expect(req.method).to.equal(method);
           });
+      });
+    });
+  });
+
+  describe('response properties', () => {
+
+    it('status', () => {
+
+        return request().get().then((res) => {
+
+          expect(res.status).to.equal(200);
+        });
+    });
+
+    it('headers', () => {
+
+      return request().get().then((res) => {
+
+        expect(res.headers).to.eql({
+          custom: 'header'
+        });
       });
     });
   });

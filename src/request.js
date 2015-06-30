@@ -4,20 +4,31 @@ import {Promise} from 'es6-promise';
 function request (spec = {}) {
 
   let origin = spec.origin || '';
-  let config = omit(spec, 'origin', 'fetch');
+
+  // Options that are used for every request
+  let universalOptions = omit(spec, 'origin', 'fetch');
 
   function httpRequest (url, options) {
 
+    let method = 'GET';
+
     return new Promise((resolve, reject) => {
 
-      fetch(origin + url, merge(config, options))
-        .then((response) => {
+      // Latest custom fetch options
+      if (options) {
+        universalOptions = merge(universalOptions, options);
+      }
 
+      fetch(origin + url, merge({method}, universalOptions))
+        .then((response) => {
           response.json().then((body) => {
 
             if (response.status < 400) {
-              // TODO: need to be able to pass the response, headers, etc back as well
-              resolve(body);
+              resolve({
+                status: response.status,
+                headers: response.headers,
+                body
+              });
             }
             else {
               let responseObject = merge(pick(response, 'status', 'statusText'), {body});
@@ -28,39 +39,44 @@ function request (spec = {}) {
     });
   }
 
-  function get (url, options) {
+  function get (url, payload = {}) {
 
-    return httpRequest(url, merge({
-      method: 'GET'
-    }, options));
+    return httpRequest(url, {
+      method: 'GET',
+      body: JSON.stringify(payload)
+    });
   }
 
-  function post (url, options) {
+  function post (url, payload = {}) {
 
-    return httpRequest(url, merge({
-      method: 'POST'
-    }, options));
+    return httpRequest(url, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
   }
 
-  function put (url, options) {
+  function put (url, payload = {}) {
 
-    return httpRequest(url, merge({
-      method: 'PUT'
-    }, options));
+    return httpRequest(url, {
+      method: 'PUT',
+      body: JSON.stringify(payload)
+    });
   }
 
-  function patch (url, options) {
+  function patch (url, payload = {}) {
 
-    return httpRequest(url, merge({
-      method: 'PATCH'
-    }, options));
+    return httpRequest(url, {
+      method: 'PATCH',
+      body: JSON.stringify(payload)
+    });
   }
 
-  function del (url, options) {
+  function del (url, payload = {}) {
 
-    return httpRequest(url, merge({
-      method: 'DELETE'
-    }, options));
+    return httpRequest(url, {
+      method: 'DELETE',
+      body: JSON.stringify(payload)
+    });
   }
 
   return {

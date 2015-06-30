@@ -5,8 +5,6 @@ export default {
     attributes: {},
     relationships: {
       designer: {
-        // links: {},
-        // meta: {}
         data: {
           type: 'people',
           id: 2
