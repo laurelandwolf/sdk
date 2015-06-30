@@ -1,4 +1,5 @@
 import {defer, merge, isEmpty} from 'lodash';
+import {Promise} from 'es6-promise';
 
 import request from '../request';
 // import validate from '../validate';

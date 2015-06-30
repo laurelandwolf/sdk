@@ -1,4 +1,5 @@
 import {omit, merge, pick} from 'lodash';
+import {Promise} from 'es6-promise';
 
 function request (spec = {}) {
 
