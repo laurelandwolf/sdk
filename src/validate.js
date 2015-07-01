@@ -1,8 +1,8 @@
-import {isEmpty, isObject} from 'lodash';
+import {isObject} from 'lodash';
 
 function attributes (obj) {
 
-  let isValid = obj && isObject(obj) && !isEmpty(obj);
+  let isValid = obj && isObject(obj);
 
   if (!isValid) {
     throw new TypeError('Invalid attributes');

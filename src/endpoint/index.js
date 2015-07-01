@@ -2,7 +2,6 @@ import {defer, merge, isEmpty} from 'lodash';
 import {Promise} from 'es6-promise';
 
 import request from '../request';
-// import validate from '../validate';
 import qshash from './qs-hash';
 import qslist from './qs-list';
 import serialize from '../serialize';
