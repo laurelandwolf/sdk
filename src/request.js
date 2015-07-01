@@ -4,22 +4,23 @@ import {Promise} from 'es6-promise';
 function request (spec = {}) {
 
   let origin = spec.origin || '';
+  let defaultMethod = 'GET';
 
   // Options that are used for every request
-  let universalOptions = omit(spec, 'origin', 'fetch');
+  let fetchConfig = omit(spec, 'origin', 'fetch');
 
   function httpRequest (url, options) {
-
-    let method = 'GET';
 
     return new Promise((resolve, reject) => {
 
       // Latest custom fetch options
       if (options) {
-        universalOptions = merge(universalOptions, options);
+        fetchConfig = merge(fetchConfig, options);
       }
 
-      fetch(origin + url, merge({method}, universalOptions))
+      fetchConfig = merge({method: defaultMethod}, fetchConfig);
+
+      fetch(origin + url, fetchConfig)
         .then((response) => {
           response.json().then((body) => {
 
@@ -39,11 +40,10 @@ function request (spec = {}) {
     });
   }
 
-  function get (url, payload = {}) {
+  function get (url) {
 
     return httpRequest(url, {
-      method: 'GET',
-      body: JSON.stringify(payload)
+      method: 'GET'
     });
   }
 
@@ -71,11 +71,10 @@ function request (spec = {}) {
     });
   }
 
-  function del (url, payload = {}) {
+  function del (url) {
 
     return httpRequest(url, {
-      method: 'DELETE',
-      body: JSON.stringify(payload)
+      method: 'DELETE'
     });
   }
 

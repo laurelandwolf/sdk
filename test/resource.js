@@ -16,6 +16,10 @@ describe('resource', () => {
 
     projects = resource({
       type: 'projects'
+    }, {
+      headers: {
+        custom: 'header'
+      }
     });
   });
 
@@ -41,6 +45,17 @@ describe('resource', () => {
           expect(req.url).to.equal('/projects');
           expect(req.method).to.equal('GET');
         });
+    });
+
+    it('sends global headers', () => {
+
+      return projects.getProjects().then((res) => {
+
+        let req = mockFetch.request();
+        expect(req.headers).to.eql({
+          custom: 'header'
+        });
+      });
     });
 
     it('with relationships', () => {
@@ -95,6 +110,17 @@ describe('resource', () => {
         });
     });
 
+    it('sends global headers', () => {
+
+      return projects.getProject(1).then((res) => {
+
+        let req = mockFetch.request();
+        expect(req.headers).to.eql({
+          custom: 'header'
+        });
+      });
+    });
+
     it('with relationships', () => {
 
       return projects
@@ -145,6 +171,17 @@ describe('resource', () => {
           let req = mockFetch.request();
           expect(req.method).to.equal('POST');
         });
+    });
+
+    it('sends global headers', () => {
+
+      return projects.createProject({}).then((res) => {
+
+        let req = mockFetch.request();
+        expect(req.headers).to.eql({
+          custom: 'header'
+        });
+      });
     });
 
     it('new', () => {
@@ -219,6 +256,17 @@ describe('resource', () => {
       });
     });
 
+    it('sends global headers', () => {
+
+      return projects.updateProject(1, {}).then((res) => {
+
+        let req = mockFetch.request();
+        expect(req.headers).to.eql({
+          custom: 'header'
+        });
+      });
+    });
+
     it('updates', () => {
 
       return projects.updateProject(1, {
@@ -273,6 +321,17 @@ describe('resource', () => {
           let req = mockFetch.request();
           expect(req.method).to.equal('DELETE');
         });
+    });
+
+    it('sends global headers', () => {
+
+      return projects.deleteProject(1).then((res) => {
+
+        let req = mockFetch.request();
+        expect(req.headers).to.eql({
+          custom: 'header'
+        });
+      });
     });
 
     it('deletes', () => {

@@ -51,7 +51,7 @@ function resource (spec, apiConfig = {}) {
       uri: `${uri}/${id}`,
       method: 'PATCH',
       payload
-    });
+    }, apiConfig);
   }
 
   function del (id) {
@@ -59,7 +59,7 @@ function resource (spec, apiConfig = {}) {
     return endpoint({
       uri: `${uri}/${id}`,
       method: 'DELETE'
-    });
+    }, apiConfig);
   }
 
   return {
