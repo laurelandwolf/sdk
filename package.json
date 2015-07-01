@@ -14,9 +14,18 @@
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
     "chai": "^3.0.0",
+    "karma": "^0.12.37",
+    "karma-browserify": "^4.2.1",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.2.0",
+    "karma-mocha-reporter": "^1.0.2",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "karma-spec-reporter": "0.0.19",
     "lw-build": "laurelandwolf/build",
     "mocha": "^2.2.5",
-    "mochify": "^2.10.0"
+    "mochify": "^2.10.0",
+    "phantomjs": "^1.9.17"
   },
   "dependencies": {
     "as-array": "^1.0.0",
