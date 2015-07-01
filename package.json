@@ -14,7 +14,6 @@
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
     "chai": "^3.0.0",
-    "fetch-mock": "^1.5.2",
     "lw-build": "laurelandwolf/build",
     "mocha": "^2.2.5",
     "mochify": "^2.10.0"
