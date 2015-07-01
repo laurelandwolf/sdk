@@ -3,7 +3,12 @@ import pluralize from 'pluralize';
 
 import endpoint from './endpoint';
 
-function resource (spec, apiConfig = {}) {
+function resourceName (method, type, plural = false) {
+
+  return `${method.toLowerCase()}${capitalize(pluralize(type, plural ? 2 : 1))}`;
+}
+
+function resource (spec, globalConfig = {}) {
 
   let {type} = spec;
   let uri = `/${type}`;
@@ -14,7 +19,7 @@ function resource (spec, apiConfig = {}) {
     return endpoint({
       uri,
       method: 'GET'
-    }, apiConfig);
+    }, globalConfig);
   }
 
   function getOne (id) {
@@ -22,7 +27,7 @@ function resource (spec, apiConfig = {}) {
     return endpoint({
       uri: `${uri}/${id}`,
       method: 'GET'
-    }, apiConfig);
+    }, globalConfig);
   }
 
   function create (attributes) {
@@ -36,7 +41,7 @@ function resource (spec, apiConfig = {}) {
       uri,
       method: 'POST',
       payload
-    }, apiConfig);
+    }, globalConfig);
   }
 
   function update (id, attributes) {
@@ -51,7 +56,7 @@ function resource (spec, apiConfig = {}) {
       uri: `${uri}/${id}`,
       method: 'PATCH',
       payload
-    }, apiConfig);
+    }, globalConfig);
   }
 
   function del (id) {
@@ -59,17 +64,16 @@ function resource (spec, apiConfig = {}) {
     return endpoint({
       uri: `${uri}/${id}`,
       method: 'DELETE'
-    }, apiConfig);
+    }, globalConfig);
   }
 
   return {
-    [`get${capitalize(pluralize(type))}`]: getAll,
-    [`get${capitalize(pluralize(type, 1))}`]: getOne,
-    [`create${capitalize(pluralize(type, 1))}`]: create,
-    [`update${capitalize(pluralize(type, 1))}`]: update,
-    [`delete${capitalize(pluralize(type, 1))}`]: del
+    [resourceName('get', type, true)]: getAll,
+    [resourceName('get', type)]: getOne,
+    [resourceName('create', type)]: create,
+    [resourceName('update', type)]: update,
+    [resourceName('delete', type)]: del
   };
 }
-
 
 export default resource;
