@@ -48,8 +48,21 @@ async function allProjects () {
 
 All tests get run in PhantomJS locally
 
+Clone and install deps
+
 ```
 git clone git@github.com:laurelandwolf/sdk.git sdk && cd sdk
 npm install
+```
+
+Run tests in PhantomJS (faster)
+
+```
 npm test
+```
+
+Run tests in all available browsers (slower)
+
+```
+npm test -- -b
 ```
