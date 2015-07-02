@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
-    "test": "npm run lint && mochify --reporter dot --recursive",
+    "test-mochify": "npm run lint && mochify --reporter dot --recursive",
+    "test": "karma start",
     "lint": "lw lint src"
   },
   "author": "Laurel and Wolf",
@@ -21,6 +22,7 @@
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.0.2",
     "karma-phantomjs-launcher": "^0.2.0",
+    "karma-safari-launcher": "^0.1.1",
     "karma-spec-reporter": "0.0.19",
     "lw-build": "laurelandwolf/build",
     "mocha": "^2.2.5",
