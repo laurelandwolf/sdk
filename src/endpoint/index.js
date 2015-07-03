@@ -71,7 +71,7 @@ function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
 
   // Chainable methods for get requests
   if (method.toLowerCase() === 'get') {
-    promise.includes = (...args) => {
+    promise.include = (...args) => {
 
       includes.push(...args);
       return promise;
