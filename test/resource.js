@@ -62,7 +62,7 @@ describe('resource', () => {
 
       return projects
         .getProjects()
-        .include('rooms', 'friends')
+        .include('rooms', 'friends', 'rooms.inspirationLinks')
         .then((res) => {
 
           let req = mockFetch.request();

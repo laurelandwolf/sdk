@@ -21,15 +21,20 @@ let api = sdk({
 	}
 });
 
-async function allProjects () {
-
-	try {
-		let res = await api().getProjects();
-		// Do something with res.body;
-	}
-	catch (err) {
-		// Do somethign with err.body;
-	}
+try {
+	let res = await api()
+		.getProjects()
+		.include('rooms', 'rooms.somethingElse')
+		.fields({
+			rooms: ['title']
+		});
+	
+	
+	
+	// Do something with res.body;
+}
+catch (err) {
+	// Do somethign with err.body;
 }
 
 ```
