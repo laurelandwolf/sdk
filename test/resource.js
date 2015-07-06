@@ -66,7 +66,7 @@ describe('resource', () => {
         .then((res) => {
 
           let req = mockFetch.request();
-          expect(req.url).to.equal('/projects?include=rooms,friends');
+          expect(req.url).to.equal('/projects?include=rooms,friends,rooms.inpsirationLinks');
         });
     });
 

@@ -28,9 +28,7 @@ try {
 		.fields({
 			rooms: ['title']
 		});
-	
-	
-	
+		
 	// Do something with res.body;
 }
 catch (err) {
