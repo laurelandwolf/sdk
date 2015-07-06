@@ -1,6 +1,6 @@
-# Laurel and Wolf SDK
+# Laurel & Wolf JS SDK
 
-SDK for Laurel and Wolf API
+JS SDK for Laurel & Wolf API
 
 ## Install
 

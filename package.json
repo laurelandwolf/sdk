@@ -1,7 +1,7 @@
 {
   "name": "lw-sdk",
   "version": "1.0.0",
-  "description": "SDK for Laurel and Wolf API",
+  "description": "SDK for Laurel & Wolf API",
   "main": "src/index.js",
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
@@ -9,7 +9,7 @@
     "test": "karma start",
     "lint": "lw lint src"
   },
-  "author": "Laurel and Wolf",
+  "author": "Laurel & Wolf",
   "license": "ISC",
   "devDependencies": {
     "babelify": "^6.1.2",
