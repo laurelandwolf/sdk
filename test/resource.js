@@ -63,10 +63,13 @@ describe('resource', () => {
       return projects
         .getProjects()
         .include('rooms', 'friends', 'rooms.inspirationLinks')
+        .include({another: ['thing', 'isHere']})
         .then((res) => {
 
           let req = mockFetch.request();
-          expect(req.url).to.equal('/projects?include=rooms,friends,rooms.inpsirationLinks');
+          expect(req.url).to.equal(
+            '/projects?include=rooms,friends,rooms.inspiration-links,another.thing,another.is-here'
+          );
         });
     });
 

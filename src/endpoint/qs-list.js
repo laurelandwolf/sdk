@@ -11,10 +11,12 @@ function qslist (name) {
     let newIncludes = _(args)
       .map((item) => {
 
+        // i.e. rooms.inspirationLinks
         if (isString(item)) {
-          return snakeCase(item);
+          return map(item.split('.'), snakeCase).join('.');
         }
 
+        // i.e. - {rooms: ['inspirationLinks']}
         return map(item, (vals, field) => {
 
           return map(vals, (val) => `${snakeCase(field)}.${snakeCase(val)}`);
