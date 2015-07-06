@@ -77,9 +77,9 @@ function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
       return promise;
     };
 
-    promise.fields = (newFields) => {
+    promise.fields = (...args) => {
 
-      fields.add(newFields);
+      fields.add(...args);
       return promise;
     };
 
