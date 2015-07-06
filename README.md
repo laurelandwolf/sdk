@@ -2,6 +2,18 @@
 
 JS SDK for Laurel & Wolf API
 
+All requests and responses assume that the api strictly adheres to the [JSON API spec](http://jsonapi.org).
+
+* [Usage](#usage)
+* [API](#api)
+	* [Overview](#overview)
+		* [Interacting with resources](#interacting-with-resources)
+		* [Resource response](#resource-response)
+		* [Setting default values](#setting-default-values)
+		* [Building requests](#building-requests)
+	* [Resources](#resources)
+* [Running Tests](#running-tests)
+
 ## Install
 
 ```
@@ -24,9 +36,9 @@ let api = sdk({
 try {
 	let res = await api()
 		.getProjects()
-		.include('rooms', 'rooms.somethingElse')
+		.include('schrute', 'schrute.farms')
 		.fields({
-			rooms: ['title']
+			schrute: ['beets']
 		});
 		
 	// Do something with res.body;
@@ -41,13 +53,84 @@ catch (err) {
 
 ### Overview
 
-(Soon)
+#### Interacting with resources
 
-### Methods
+4 verbs are used to describe how you interact with a resource
 
-(Soon)
+* `get`
+* `create`
+* `update`
+* `delete`
 
-## Run Tests
+For example, for the resource **projects**, the following methods are available:
+
+* `getProjects` - list of projects
+* `getProject(:id)` - single project
+* `createProject`
+* `updateProjects`
+* `deleteProject`
+
+#### Resource response
+
+Each method associated with a resource returns a promise. Any response with a status of less than `400` is considered a success and will resolve the promise. Any response with a status that is greater than or equal to 400 will reject the promise.
+
+Both resolved and rejected responses return the status, body, headers, etc.
+
+```js
+let api = sdk();
+
+api()
+	.getProjects()
+	.then(() => {/* status is less than 400 */})
+	.catch(() => {/* status is greater than or equal to 400 */})
+```
+
+#### Setting default values
+
+Default values make it easier to ensure that all requests are uniform and valid. Since the sdk uses the [fetch api](https://developers.google.com/web/updates/2015/03/introduction-to-fetch?hl=en) to make all requests, any options available to the fetch method are available when defining defaults.
+
+There are 2 ways to set default values.
+
+**For all requests**
+
+```js
+let api = sdk({
+	headers: {
+		some: 'default'
+	}
+});
+```
+
+**For a specific request**
+
+```js
+let api = sdk();
+
+api({
+	headers: {
+		some: 'custom header'
+	}
+})
+	.getProjects();
+```
+
+#### Building requests
+
+All `get` requests have the following chainable helper-methods available for building the JSON API request:
+
+* `include`
+* `fields`
+* `sort`
+
+All `create` and `update` requests have the following chainable helper-methods available for build the JSON API requests:
+
+* `relatedTo`
+
+### Resources
+
+#### `projects`
+
+## Running Tests
 
 All tests get run in PhantomJS locally
 
