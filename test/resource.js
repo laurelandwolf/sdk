@@ -78,10 +78,42 @@ describe('resource', () => {
       return projects
         .getProjects()
         .fields({'rooms': ['title', 'location']})
+        .fields({'rooms': ['test']})
+        .fields({'test': ['one']}, {'test': ['two']})
         .then((res) => {
 
           let req = mockFetch.request();
-          expect(req.url).to.equal('/projects?fields[rooms]=title,location');
+          expect(req.url).to.equal(
+            '/projects?fields[rooms]=title,location,test&fields[test]=one,two'
+          );
+        });
+    });
+
+    it('with sparse fieldsets from alternate formatting', () => {
+
+      return projects
+        .getProjects()
+        .fields('rooms.inspiriationLinks', 'rooms.title')
+        .then((res) => {
+
+          let req = mockFetch.request();
+          expect(req.url).to.equal(
+            '/projects?fields[rooms]=inspiriation-links,title'
+          );
+        });
+    });
+
+    it('snakeCases sparse fieldsets', () => {
+
+      return projects
+        .getProjects()
+        .fields('testField.testValue')
+        .then((res) => {
+
+          let req = mockFetch.request();
+          expect(req.url).to.equal(
+            '/projects?fields[test-field]=test-value'
+          );
         });
     });
 

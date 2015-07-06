@@ -1,24 +1,46 @@
-import {forEach, union, map} from 'lodash';
+import _, {isString, forEach, union, map} from 'lodash';
 import asArray from 'as-array';
+
+import {snakeCase} from '../format';
 
 function qshash () {
 
   let list = {};
 
-  function parseFields (fields, fieldsMap) {
+  function parseFields (fields, ...newFields) {
 
-    forEach(fieldsMap, (val, key) => {
+    _(newFields)
+      .map((field) => {
 
-      fields[key] = union(fields[key], asArray(fieldsMap[key]));
-    });
+        // Convert to formatted object
+        if (isString(field)) {
+          let [rel, name] = field.split('.');
+          field = {
+            [snakeCase(rel)]: snakeCase(name)
+          };
+        }
+
+        return field;
+      })
+      .forEach((fieldsMap) => {
+
+        forEach(fieldsMap, (val, key) => {
+
+          let name = snakeCase(key);
+          let values = map(asArray(val), snakeCase);
+
+          fields[name] = union(fields[name], values);
+        });
+      })
+      .value();
 
     return fields;
   }
 
   return {
-    add (newFields) {
+    add (...newFields) {
 
-      list = parseFields(list, newFields);
+      list = parseFields(list, ...newFields);
     },
 
     stringify () {
