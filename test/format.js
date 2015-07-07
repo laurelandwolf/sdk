@@ -50,6 +50,21 @@ describe('format', () => {
         }
       });
     });
+
+    it('object with floating point numbers as values', () => {
+
+      let cameledObject = format.camelCase({
+        budget: null,
+        width: 12.0,
+        'room-type': 'living_room'
+      });
+
+      expect(cameledObject).to.deep.equal({
+        budget: null,
+        width: 12.0,
+        roomType: 'living_room'
+      });
+    });
   });
 
   describe('snakeCase', () => {
