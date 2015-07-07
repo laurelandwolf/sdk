@@ -16,7 +16,7 @@ module.exports = function(config) {
       'test/**/*.js': ['browserify']
     },
     autoWatch: false,
-    singleRun: true,
+    singleRun: false,
     client: {
       mocha: {
         ui: 'bdd'
