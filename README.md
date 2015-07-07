@@ -141,14 +141,20 @@ git clone git@github.com:laurelandwolf/sdk.git sdk && cd sdk
 npm install
 ```
 
-Run tests in PhantomJS (faster)
+While writing new tests it is recommended that you start the test server for faster test runs
+
+```
+npm run test-server
+```
+
+Once the test server is started, you can run
 
 ```
 npm test
 ```
 
-Run tests in all available browsers (slower)
+For one-off test runs without starting the test server, use
 
 ```
-npm test -- -b
+npm run tests
 ```
