@@ -25,26 +25,49 @@ function isObject (data) {
 
 function camelCaseKeys (obj) {
 
-  if (isString(obj)) {
+  if (isString(obj) || !obj) {
     return obj;
   }
 
-  return _(obj)
-    .map((value, key) => {
+  let cameledObject = {};
 
-      let val = value;
+  Object.keys(obj).forEach((key) => {
+    let value = obj[key];
 
-      if (isObject(value)) {
-        val = camelCaseKeys(value);
-      }
-      else if (Array.isArray(value)) {
-        val = map(value, (v) => camelCaseKeys(v));
-      }
+    let val = value;
 
-      return [toCamelCase(key), val];
-    })
-    .zipObject()
-    .value();
+    if (Array.isArray(value)) {
+      val = map(value, camelCaseKeys);
+    }
+    else if (isObject(value)) {
+      val = camelCaseKeys(value);
+    }
+
+    cameledObject[toCamelCase(key)] = val;
+  });
+
+  return cameledObject;
+
+  // NOTE: bug in lodash forces the use of native stuff
+
+  // return _(obj)
+  //   .map((value, key) => {
+
+  //     let val = value;
+
+  //     if (Array.isArray(value)) {
+  //       val = map(value, camelCaseKeys);
+  //     }
+  //     else if (isObject(value)) {
+  //       val = camelCaseKeys(value);
+  //     }
+
+  //     console.log(val);
+
+  //     return [toCamelCase(key), val];
+  //   })
+  //   .zipObject()
+  //   .value();
 }
 
 function snakeCaseKeys (obj) {
