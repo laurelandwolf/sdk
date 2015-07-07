@@ -1,11 +1,12 @@
-import _, {
+import {
   map,
   startsWith,
   trimLeft,
   isObject as isObjectLoose,
   isString,
   camelCase as toCamelCase,
-  kebabCase
+  kebabCase,
+  forOwn
 } from 'lodash';
 
 function startsWithDash (str) {
@@ -31,8 +32,7 @@ function camelCaseKeys (obj) {
 
   let cameledObject = {};
 
-  Object.keys(obj).forEach((key) => {
-    let value = obj[key];
+  forOwn(obj, (value, key) => {
 
     let val = value;
 
@@ -47,27 +47,6 @@ function camelCaseKeys (obj) {
   });
 
   return cameledObject;
-
-  // NOTE: bug in lodash forces the use of native stuff
-
-  // return _(obj)
-  //   .map((value, key) => {
-
-  //     let val = value;
-
-  //     if (Array.isArray(value)) {
-  //       val = map(value, camelCaseKeys);
-  //     }
-  //     else if (isObject(value)) {
-  //       val = camelCaseKeys(value);
-  //     }
-
-  //     console.log(val);
-
-  //     return [toCamelCase(key), val];
-  //   })
-  //   .zipObject()
-  //   .value();
 }
 
 function snakeCaseKeys (obj) {
@@ -76,22 +55,23 @@ function snakeCaseKeys (obj) {
     return obj;
   }
 
-  return _(obj)
-    .map((value, key) => {
+  let snakedObject = {};
 
-      let val = value;
+  forOwn(obj, (value, key) => {
 
-      if (isObject(value)) {
-        val = snakeCaseKeys(value);
-      }
-      else if (Array.isArray(value)) {
-        val = map(value, (v) => snakeCaseKeys(v));
-      }
+    let val = value;
 
-      return [kebabCase(key), val];
-    })
-    .zipObject()
-    .value();
+    if (Array.isArray(value)) {
+      val = map(value, snakeCaseKeys);
+    }
+    else if (isObject(value)) {
+      val = snakeCaseKeys(value);
+    }
+
+    snakedObject[kebabCase(key)] = val;
+  });
+
+  return snakedObject;
 }
 
 function camelCase (data) {
