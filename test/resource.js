@@ -401,7 +401,7 @@ describe('resource', () => {
         return projects
           .getProject(123)
           .sort('-createdAt', 'updatedAt')
-          .query('foo': 'bar'})
+          .query('foo', 'bar')
           .then((res) => {
 
             let req = mockFetch.request();
