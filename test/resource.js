@@ -412,7 +412,7 @@ describe('resource', () => {
 
     describe('with an object argument', () => {
 
-      it('supports string values', () => {
+      it.only('supports string values', () => {
 
         return projects
           .getProject(123)
@@ -428,7 +428,7 @@ describe('resource', () => {
 
         return projects
           .getProject(123)
-          .query({foo: ['bar', 'baz'])
+          .query({foo: ['bar', 'baz']})
           .then((res) => {
 
             let req = mockFetch.request();
