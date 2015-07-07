@@ -379,4 +379,74 @@ describe('resource', () => {
         });
     });
   });
+
+  describe('queries', () => {
+
+    describe('with string arguments', () => {
+
+      it('converts query arguments as strings into query string', () => {
+
+        return projects
+          .getProject(123)
+          .query('foo', 'bar')
+          .then((res) => {
+
+            let req = mockFetch.request();
+            expect(req.url).to.equal('/projects/123?foo=bar');
+          });
+      });
+
+      it('combines query params with params from built-in functions', () => {
+
+        return projects
+          .getProject(123)
+          .sort('-createdAt', 'updatedAt')
+          .query('foo', 'bar')
+          .then((res) => {
+
+            let req = mockFetch.request();
+            expect(req.url).to.equal('/projects/123?sort=-created-at,updated-at&foo=bar');
+          });
+      });
+    });
+
+    describe('with an object argument', () => {
+
+      it('supports string values', () => {
+
+        return projects
+          .getProject(123)
+          .query({foo: 'bar'})
+          .then((res) => {
+
+            let req = mockFetch.request();
+            expect(req.url).to.equal('/projects/123?foo=bar');
+          });
+      });
+
+      it('supports array values (unkeyed)', () => {
+
+        return projects
+          .getProject(123)
+          .query({foo: ['bar', 'baz']})
+          .then((res) => {
+
+            let req = mockFetch.request();
+            expect(req.url).to.equal('/projects/123?foo[]=bar&foo[]=baz');
+          });
+      });
+
+      it('supports object values', () => {
+
+        return projects
+          .getProject(123)
+          .query({foo: {bar: 'baz', bat: 'bing'}})
+          .then((res) => {
+
+            let req = mockFetch.request();
+            expect(req.url).to.equal('/projects/123?foo[bar]=baz&foo[bat]=bing');
+          });
+      })
+    });
+  });
 });

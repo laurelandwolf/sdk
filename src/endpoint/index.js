@@ -4,6 +4,7 @@ import {Promise} from 'es6-promise';
 import request from '../request';
 import qshash from './qs-hash';
 import qslist from './qs-list';
+import querySerializer from './query-serializer';
 import serialize from '../serialize';
 
 function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
@@ -12,6 +13,7 @@ function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
   let includes = qslist('include');
   let sort = qslist('sort');
   let fields = qshash();
+  let query = querySerializer();
 
   function renderEndpointUri () {
 
@@ -28,6 +30,10 @@ function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
     //
     if (sort.count() > 0) {
       querystring.push(sort.stringify());
+    }
+
+    if (query.count() > 0) {
+      querystring.push(query.stringify());
     }
 
     // Ensure that nothing extra gets put in the uri
@@ -86,6 +92,12 @@ function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
     promise.sort = (...args) => {
 
       sort.push(...args);
+      return promise;
+    };
+
+    promise.query = (...args) => {
+
+      query.add(...args);
       return promise;
     };
   }
