@@ -51,18 +51,20 @@ describe('format', () => {
       });
     });
 
-    it('object with floating point numbers as values', () => {
+    it('object with "length" key', () => {
 
-      let cameledObject = format.camelCase({
-        budget: null,
-        width: 12.0,
-        'room-type': 'living_room'
-      });
+      var obj = {
+        "room-type": "living-room",
+        "budget": null,
+        "length": 12.0
+      };
+
+      let cameledObject = format.camelCase(obj);
 
       expect(cameledObject).to.deep.equal({
+        roomType: 'living-room',
         budget: null,
-        width: 12.0,
-        roomType: 'living_room'
+        length: 12.0
       });
     });
   });
