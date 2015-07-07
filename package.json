@@ -6,7 +6,6 @@
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
     "test-mochify": "npm run lint && mochify --reporter dot --recursive",
-    "test-browser": "npm run lint && karma start",
     "test-server": "karma start",
     "test": "npm run lint && karma run",
     "lint": "lw lint src"
