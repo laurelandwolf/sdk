@@ -1,4 +1,4 @@
-import {isString, isObject, isArray, all, map, keys} from 'lodash';
+import _, {isString, isObject, isArray, all, map} from 'lodash';
 
 function querySerializer () {
 
@@ -11,7 +11,21 @@ function querySerializer () {
       newQuery = newQueries.join('=');
     }
     else if (isObject(...newQueries)) {
-      newQuery = map(...newQueries, (value, key) => `${key}=${value}`).join('&');
+      newQuery = _(...newQueries)
+        .map((value, key) => {
+          if (isArray(value)) {
+            return map(value, val => `${key}[]=${val}`);
+          }
+          else if (isObject(value)) {
+            return map(value, (val, k) => `${key}[${k}]=${val}`);
+          }
+          else {
+            return `${key}=${value}`;
+          }
+        })
+        .flatten()
+        .values()
+        .join('&');
     }
 
     return queries.concat(newQuery);

@@ -412,7 +412,7 @@ describe('resource', () => {
 
     describe('with an object argument', () => {
 
-      it.only('supports string values', () => {
+      it('supports string values', () => {
 
         return projects
           .getProject(123)
