@@ -21,9 +21,14 @@ function api (config = {}) {
     // uri: 'projects' <~~~~~~~~~~~ use that to override name
   });
 
+  let designers = makeResource({
+    type: 'designers'
+  });
+
   return assign(
     {config},
-    projects
+    projects,
+    designers
   );
 }
 

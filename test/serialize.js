@@ -2,6 +2,7 @@ import {expect} from 'chai';
 
 import serialize from '../src/serialize';
 import responseData from './mock/jsonapi-response';
+import arrayResponseData from './mock/jsonapi-response-array';
 
 describe('serialize', () => {
 
@@ -24,7 +25,7 @@ describe('serialize', () => {
       expect(res.included).to.exist;
     });
 
-    it('merges data relationships from included list', () => {
+    it('merges data relationships for a single resource from included list', () => {
 
       expect(res.data.relationships.designer.attributes.name).to.equal('Tester');
     });
@@ -51,6 +52,12 @@ describe('serialize', () => {
 
       let name = res.included.list[9876].relationships.author[123].attributes.name;
       expect(name).to.equal('another');
+    });
+
+    it('should assign relationships to a key by relationship name, not type name', () => {
+
+      let resMultiple = serialize.response(arrayResponseData);
+      expect(resMultiple.data[1].relationships.media[24]).to.not.equal(undefined);
     });
   });
 

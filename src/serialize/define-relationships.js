@@ -15,22 +15,22 @@ function defineRelationships (resource, included) {
 
       let mergedRelationships = {};
 
-      forEach(Object.keys(originalRels), (type) => {
+      forEach(Object.keys(originalRels), (relationshipName) => {
 
         // Get/create reference to object tracking our merged relationships
-        mergedRelationships[type] = mergedRelationships[type] || {};
+        mergedRelationships[relationshipName] = mergedRelationships[relationshipName] || {};
 
         // Catches edge case where data is null or undefined
-        if (!originalRels[type].data) {
-          return originalRels[type].data;
+        if (!originalRels[relationshipName].data) {
+          return originalRels[relationshipName].data;
         }
 
         // data is an Array, meaning it's multiple items
-        if (Array.isArray(originalRels[type].data)) {
+        if (Array.isArray(originalRels[relationshipName].data)) {
 
           let props = {};
 
-          forEach(originalRels[type].data, (item) => {
+          forEach(originalRels[relationshipName].data, (item) => {
 
             let relatedResource = find(included, {type: item.type, id: item.id});
 
@@ -43,16 +43,16 @@ function defineRelationships (resource, included) {
             };
           });
 
-          Object.defineProperties(mergedRelationships[type], props);
+          Object.defineProperties(mergedRelationships[relationshipName], props);
         }
 
         // data is an Object, meaning it's a single item
         else {
 
-          let item = originalRels[type].data;
+          let item = originalRels[relationshipName].data;
           let relatedResource = find(included, {type: item.type, id: item.id});
 
-          mergedRelationships[type] = defineRelationships(relatedResource, included);
+          mergedRelationships[relationshipName] = defineRelationships(relatedResource, included);
         }
       });
 
