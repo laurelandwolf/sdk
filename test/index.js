@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {omit} from 'lodash';
 
-import sdk from '../src';
+import sdk, {serialize} from '../src';
 import mockFetch from './mock/fetch';
 
 describe('sdk', () => {
@@ -75,5 +75,12 @@ describe('sdk', () => {
     }).config;
 
     expect(overridenApiConfig.origin).to.equal('http://overridden.com');
+  });
+
+  it('exposes the serializer', () => {
+
+    expect(serialize).to.be.an('object');
+    expect(serialize.response).to.be.a('function');
+    expect(serialize.request).to.be.a('function');
   });
 });
