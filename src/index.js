@@ -5,6 +5,7 @@ import 'whatwg-fetch';
 import {merge} from 'lodash';
 
 import api from './api';
+import serialize from './serialize';
 
 export default function sdk (globalSpec = {}) {
 
@@ -24,3 +25,7 @@ export default function sdk (globalSpec = {}) {
 
   return apiFactory;
 }
+
+export {
+  serialize
+};
