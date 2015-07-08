@@ -381,6 +381,17 @@ describe('resource', () => {
   });
 
   describe('queries', () => {
+    it('encodes special characters for URIs', () => {
+
+      return projects
+        .getProject(123)
+        .query('foo bar', 'baz%bat')
+        .then(res => {
+
+          let req = mockFetch.request();
+          expect(req.url).to.equal('/projects/123?foo%20bar=baz%25bat');
+        });
+    });
 
     describe('with string arguments', () => {
 
@@ -432,7 +443,7 @@ describe('resource', () => {
           .then((res) => {
 
             let req = mockFetch.request();
-            expect(req.url).to.equal('/projects/123?foo[]=bar&foo[]=baz');
+            expect(req.url).to.equal('/projects/123?foo%5B%5D=bar&foo%5B%5D=baz');
           });
       });
 
@@ -444,9 +455,21 @@ describe('resource', () => {
           .then((res) => {
 
             let req = mockFetch.request();
-            expect(req.url).to.equal('/projects/123?foo[bar]=baz&foo[bat]=bing');
+            expect(req.url).to.equal('/projects/123?foo%5Bbar%5D=baz&foo%5Bbat%5D=bing');
           });
-      })
+      });
+
+      it('supports object values with arrays as their values', () => {
+
+        return projects
+          .getProject(123)
+          .query({foo: {bar: ['baz', 'bat']}})
+          .then((res) => {
+
+            let req = mockFetch.request();
+            expect(req.url).to.equal('/projects/123?foo%5Bbar%5D%5B%5D=baz&foo%5Bbar%5D%5B%5D=bat');
+          });
+      });
     });
   });
 });
