@@ -32,6 +32,18 @@ describe('request', () => {
       });
   });
 
+  it('normalizes path when combining origin and request url', () => {
+
+    return request({
+      origin: 'https://api.laurelandwolf.com/v1.0/'
+    }).get('/test')
+      .then((res) => {
+
+        let req = mockFetch.request();
+        expect(req.url).to.equal('https://api.laurelandwolf.com/v1.0/test');
+      });
+  });
+
   it('custom headers', () => {
 
     return request({

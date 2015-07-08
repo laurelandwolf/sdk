@@ -1,5 +1,6 @@
 import {omit, merge, pick} from 'lodash';
 import {Promise} from 'es6-promise';
+import joinPath from 'join-path';
 
 function request (spec = {}) {
 
@@ -20,7 +21,7 @@ function request (spec = {}) {
 
       fetchConfig = merge({method: defaultMethod}, fetchConfig);
 
-      fetch(origin + url, fetchConfig)
+      fetch(joinPath(origin, url), fetchConfig)
         .then((response) => {
           response.json().then((body) => {
 
