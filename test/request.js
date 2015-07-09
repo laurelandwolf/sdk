@@ -1,120 +1,113 @@
-import {expect} from 'chai';
-import {omit} from 'lodash'
-
+import {namespace} from './utils/testing';
 import request from '../src/request';
 import mockFetch from './mock/fetch';
 
 let ORIGIN = 'https://api.laurelandwolf.com/v1.0';
+let test = namespace('request');
 
-describe('request', () => {
+test.beforeEach(() => {
 
-  before(() => {
-
-    mockFetch.mock({
-      response: {
-        headers: {
-          custom: 'header'
-        }
-      }
-    });
-  });
-  after(() => mockFetch.restore());
-
-  it('custom origin', () => {
-
-    return request({
-      origin: ORIGIN
-    }).get('/test')
-      .then((res) => {
-
-        let req = mockFetch.request();
-        expect(req.url).to.equal(ORIGIN + '/test');
-      });
-  });
-
-  it('normalizes path when combining origin and request url', () => {
-
-    return request({
-      origin: 'https://api.laurelandwolf.com/v1.0/'
-    }).get('/test')
-      .then((res) => {
-
-        let req = mockFetch.request();
-        expect(req.url).to.equal('https://api.laurelandwolf.com/v1.0/test');
-      });
-  });
-
-  it('custom headers', () => {
-
-    return request({
+  mockFetch.mock({
+    response: {
       headers: {
-        custom : 'header'
+        custom: 'header'
       }
-    }).get('/test')
+    }
+  });
+});
+
+test.afterEach(() => mockFetch.restore());
+
+test('custom origin', ({equal}) => {
+
+  return request({
+    origin: ORIGIN
+  }).get('/test')
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.url, ORIGIN + '/test', 'url with origin');
+    });
+});
+
+test('normalizes path when combining origin and request url', ({equal}) => {
+
+  return request({
+    origin: 'https://api.laurelandwolf.com/v1.0/'
+  }).get('/test')
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.url, 'https://api.laurelandwolf.com/v1.0/test', 'normalized path');
+    });
+});
+
+test('custom headers', ({deepEqual}) => {
+
+  return request({
+    headers: {
+      custom : 'header'
+    }
+  }).get('/test')
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      deepEqual(req.headers, {
+        custom: 'header'
+      }, 'headers set');
+    });
+});
+
+test('bare fetch', ({equal, deepEqual}) => {
+
+  return request().fetch('/test', {
+    method: 'GET',
+    headers: {
+      custom : 'header'
+    }
+  })
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.method, 'GET', 'method');
+      deepEqual(req.headers, {
+        custom: 'header'
+      }, 'headers');
+    });
+});
+
+['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].forEach((method) => {
+
+  test(method, ({equal}) => {
+
+    let req = request();
+
+    return req[method.toLowerCase()]('/test')
       .then((res) => {
 
         let req = mockFetch.request();
-        expect(req.headers).to.eql({
-          custom: 'header'
-        });
+        equal(req.method, method, method + ' method');
       });
   });
+});
 
-  it('bare fetch', () => {
+test('status', ({equal}) => {
 
-    return request().fetch('/test', {
-      method: 'GET',
-      headers: {
-        custom : 'header'
-      }
-    })
-      .then((res) => {
+    return request().get().then((res) => {
 
-        let req = mockFetch.request();
-
-        expect(req.method).to.equal('GET');
-        expect(req.headers).to.eql({
-          custom: 'header'
-        });
-      });
-  });
-
-  describe('methods', () => {
-
-    ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].forEach((method) => {
-
-      it(method, () => {
-
-        let req = request();
-
-        return req[method.toLowerCase()]('/test')
-          .then((res) => {
-
-            let req = mockFetch.request();
-            expect(req.method).to.equal(method);
-          });
-      });
+      equal(res.status, 200, '200 status');
     });
-  });
+});
 
-  describe('response properties', () => {
+test('headers', ({deepEqual}) => {
 
-    it('status', () => {
+  return request().get().then((res) => {
 
-        return request().get().then((res) => {
-
-          expect(res.status).to.equal(200);
-        });
-    });
-
-    it('headers', () => {
-
-      return request().get().then((res) => {
-
-        expect(res.headers).to.eql({
-          custom: 'header'
-        });
-      });
-    });
+    deepEqual(res.headers, {
+      custom: 'header'
+    }, 'custom headers');
   });
 });

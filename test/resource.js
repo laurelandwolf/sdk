@@ -1,475 +1,477 @@
-import {expect} from 'chai';
-import {omit} from 'lodash';
-
+import {namespace} from './utils/testing';
 import resource from '../src/resource';
 import mockFetch from './mock/fetch';
 
+let test = namespace('resource');
+test.getAll = test.namespace('get all');
+test.getOne = test.namespace('get one');
+test.creating = test.namespace('create');
+test.updating = test.namespace('update');
+test.deleting = test.namespace('deleting');
+test.query = test.namespace('query');
 
-describe('resource', () => {
+let projects;
 
-  let projects;
+test.beforeEach(() => {
 
-  before(() => mockFetch.mock());
-  after(() => mockFetch.restore());
+  mockFetch.mock();
 
-  beforeEach(() => {
-
-    projects = resource({
-      type: 'projects'
-    }, {
-      headers: {
-        custom: 'header'
-      }
-    });
+  let projects = resource({
+    type: 'projects'
+  }, {
+    headers: {
+      custom: 'header'
+    }
   });
 
-  it('excludes "?" if no query string', () => {
+  return {
+    projects
+  };
+});
 
-    return projects.getProjects()
+test.afterEach(() => mockFetch.restore());
+
+test('excludes "?" if no query string', ({equal, context}) => {
+
+  return context.projects.getProjects()
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.url, '/projects', 'url');
+    });
+});
+
+test.getAll('no querystring', ({equal, context}) => {
+
+  return context.projects.getProjects()
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.url, '/projects', 'url');
+      equal(req.method, 'GET', 'method');
+    });
+});
+
+test.getAll('sends global headers', ({deepEqual, context}) => {
+
+  return context.projects.getProjects().then((res) => {
+
+    let req = mockFetch.request();
+
+    deepEqual(req.headers, {
+      custom: 'header'
+    }, 'headers');
+  });
+});
+
+test.getAll('with relationships', ({context, equal}) => {
+
+  return context.projects
+    .getProjects()
+    .include('rooms', 'friends', 'rooms.inspirationLinks')
+    .include({another: ['thing', 'isHere']})
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(
+        req.url,
+        '/projects?include=rooms,friends,rooms.inspiration-links,another.thing,another.is-here',
+        'url'
+      );
+    });
+});
+
+test.getAll('with sparse fieldsets', ({context, equal}) => {
+
+  return context.projects
+    .getProjects()
+    .fields({'rooms': ['title', 'location']})
+    .fields({'rooms': ['test']})
+    .fields({'test': ['one']}, {'test': ['two']})
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(
+        req.url,
+        '/projects?fields[rooms]=title,location,test&fields[test]=one,two',
+        'url'
+      );
+    });
+});
+
+test.getAll('with sparse fieldsets from alternate formatting', ({context, equal}) => {
+
+  return context.projects
+    .getProjects()
+    .fields('rooms.inspiriationLinks', 'rooms.title')
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(
+        req.url,
+        '/projects?fields[rooms]=inspiriation-links,title',
+        'url'
+      );
+    });
+});
+
+test.getAll('snakeCases sparse fieldsets', ({equal, context}) => {
+
+  return context.projects
+    .getProjects()
+    .fields('testField.testValue')
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(
+        req.url,
+        '/projects?fields[test-field]=test-value',
+        'url'
+      );
+    });
+});
+
+test.getAll('with sort', ({context, equal}) => {
+
+  return context.projects
+    .getProjects()
+    .sort('-createdAt', 'updatedAt')
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.url, '/projects?sort=-created-at,updated-at', 'url');
+    });
+});
+
+test.getOne('no querystring', ({context, equal}) => {
+
+  return context.projects
+    .getProject(123)
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.url, '/projects/123', 'url');
+      equal(req.method, 'GET', 'method');
+    });
+});
+
+test.getOne('sends global headers', ({context, deepEqual}) => {
+
+  return context.projects.getProject(1).then((res) => {
+
+    let req = mockFetch.request();
+
+    deepEqual(req.headers, {
+      custom: 'header'
+    }, 'headers');
+  });
+});
+
+test.getOne('with relationships', ({context, equal}) => {
+
+  return context.projects
+    .getProject(123)
+    .include('rooms', 'friends')
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.url, '/projects/123?include=rooms,friends', 'url');
+    });
+});
+
+test.getOne('with sparse fieldsets', ({context, equal}) => {
+
+  return context.projects
+    .getProject(123)
+    .fields({'rooms': ['title', 'location']})
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.url, '/projects/123?fields[rooms]=title,location', 'url');
+    });
+});
+
+test.getOne('with sort', ({context, equal}) => {
+
+  return context.projects
+    .getProject(123)
+    .sort('-createdAt', 'updatedAt')
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.url, '/projects/123?sort=-created-at,updated-at', 'url');
+    });
+});
+
+test.creating('uses POST method', ({context, equal}) => {
+
+  return context.projects.createProject({
+    title: 'My Project',
+    location: 'Room'
+  })
+    .then(() => {
+
+      let req = mockFetch.request();
+      equal(req.method, 'POST', 'method');
+    });
+});
+
+test.creating('sends global headers', ({context, deepEqual}) => {
+
+  return context.projects.createProject({}).then((res) => {
+
+    let req = mockFetch.request();
+    deepEqual(req.headers, {
+      custom: 'header'
+    }, 'headers');
+  });
+});
+
+test.creating('new', ({equal, context}) => {
+
+  return context.projects.createProject({
+    title: 'My Project',
+    location: 'Room'
+  })
+    .then((res) => {
+
+      let req = mockFetch.request();
+
+      equal(req.body, JSON.stringify({
+        type: 'projects',
+        attributes: {
+          title: 'My Project',
+          location: 'Room'
+        }
+      }), 'body');
+    });
+});
+
+test.creating('with relationships', ({context, equal}) => {
+
+  return context.projects
+    .createProject({
+      title: 'My Project'
+    })
+    .relatedTo({
+      user: 123,
+      something: {
+        type: 'test',
+        id: 456
+      }
+    })
       .then((res) => {
 
         let req = mockFetch.request();
-        expect(req.url).to.equal('/projects');
-      });
-  });
 
-  describe('get all', () => {
-
-    it('no querystring', () => {
-
-      return projects.getProjects()
-        .then((res) => {
-
-          let req = mockFetch.request();
-
-          expect(req.url).to.equal('/projects');
-          expect(req.method).to.equal('GET');
-        });
-    });
-
-    it('sends global headers', () => {
-
-      return projects.getProjects().then((res) => {
-
-        let req = mockFetch.request();
-        expect(req.headers).to.eql({
-          custom: 'header'
-        });
-      });
-    });
-
-    it('with relationships', () => {
-
-      return projects
-        .getProjects()
-        .include('rooms', 'friends', 'rooms.inspirationLinks')
-        .include({another: ['thing', 'isHere']})
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.url).to.equal(
-            '/projects?include=rooms,friends,rooms.inspiration-links,another.thing,another.is-here'
-          );
-        });
-    });
-
-    it('with sparse fieldsets', () => {
-
-      return projects
-        .getProjects()
-        .fields({'rooms': ['title', 'location']})
-        .fields({'rooms': ['test']})
-        .fields({'test': ['one']}, {'test': ['two']})
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.url).to.equal(
-            '/projects?fields[rooms]=title,location,test&fields[test]=one,two'
-          );
-        });
-    });
-
-    it('with sparse fieldsets from alternate formatting', () => {
-
-      return projects
-        .getProjects()
-        .fields('rooms.inspiriationLinks', 'rooms.title')
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.url).to.equal(
-            '/projects?fields[rooms]=inspiriation-links,title'
-          );
-        });
-    });
-
-    it('snakeCases sparse fieldsets', () => {
-
-      return projects
-        .getProjects()
-        .fields('testField.testValue')
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.url).to.equal(
-            '/projects?fields[test-field]=test-value'
-          );
-        });
-    });
-
-    it('with sort', () => {
-
-      return projects
-        .getProjects()
-        .sort('-createdAt', 'updatedAt')
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.url).to.equal('/projects?sort=-created-at,updated-at');
-        });
-    });
-  });
-
-  describe('get one', () => {
-
-    it('no querystring', () => {
-
-      return projects
-        .getProject(123)
-        .then((res) => {
-
-          let req = mockFetch.request();
-
-          expect(req.url).to.equal('/projects/123');
-          expect(req.method).to.equal('GET');
-        });
-    });
-
-    it('sends global headers', () => {
-
-      return projects.getProject(1).then((res) => {
-
-        let req = mockFetch.request();
-        expect(req.headers).to.eql({
-          custom: 'header'
-        });
-      });
-    });
-
-    it('with relationships', () => {
-
-      return projects
-        .getProject(123)
-        .include('rooms', 'friends')
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.url).to.equal('/projects/123?include=rooms,friends');
-        });
-    });
-
-    it('with sparse fieldsets', () => {
-
-      return projects
-        .getProject(123)
-        .fields({'rooms': ['title', 'location']})
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.url).to.equal('/projects/123?fields[rooms]=title,location');
-        });
-    });
-
-    it('with sort', () => {
-
-      return projects
-        .getProject(123)
-        .sort('-createdAt', 'updatedAt')
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.url).to.equal('/projects/123?sort=-created-at,updated-at');
-        });
-    });
-  });
-
-  describe('create', () => {
-
-    it('uses POST method', () => {
-
-      return projects.createProject({
-        title: 'My Project',
-        location: 'Room'
-      })
-        .then(() => {
-
-          let req = mockFetch.request();
-          expect(req.method).to.equal('POST');
-        });
-    });
-
-    it('sends global headers', () => {
-
-      return projects.createProject({}).then((res) => {
-
-        let req = mockFetch.request();
-        expect(req.headers).to.eql({
-          custom: 'header'
-        });
-      });
-    });
-
-    it('new', () => {
-
-      return projects.createProject({
-        title: 'My Project',
-        location: 'Room'
-      })
-        .then((res) => {
-
-          let req = mockFetch.request();
-
-          expect(req.body).to.eql(JSON.stringify({
-            type: 'projects',
-            attributes: {
-              title: 'My Project',
-              location: 'Room'
+        equal(req.body, JSON.stringify({
+          type: 'projects',
+          attributes: {
+            title: 'My Project'
+          },
+          relationships: {
+            user: {
+              data: {
+                type: 'users',
+                id: 123
+              }
+            },
+            something: {
+              data: {
+                type: 'test',
+                id: 456
+              }
             }
-          }));
-        });
-    });
-
-    it('with relationships', () => {
-
-      return projects
-        .createProject({
-          title: 'My Project'
-        })
-        .relatedTo({
-          user: 123,
-          something: {
-            type: 'test',
-            id: 456
           }
-        })
-          .then((res) => {
+        }), 'body');
+      });
+});
 
-            let req = mockFetch.request();
+test.updating('uses PATCH method', ({context, equal}) => {
 
-            expect(req.body).to.eql(JSON.stringify({
-              type: 'projects',
-              attributes: {
-                title: 'My Project'
-              },
-              relationships: {
-                user: {
-                  data: {
-                    type: 'users',
-                    id: 123
-                  }
-                },
-                something: {
-                  data: {
-                    type: 'test',
-                    id: 456
-                  }
-                }
-              }
-            }));
-          });
-    });
+  return context.projects.updateProject(1, {}).then((res) => {
+
+    let req = mockFetch.request();
+    equal(req.method, 'PATCH', 'method');
   });
+});
 
-  describe('updating', () => {
+test.updating('sends global headers', ({context, deepEqual}) => {
 
-    it('uses PATCH method', () => {
+  return context.projects.updateProject(1, {}).then((res) => {
 
-      return projects.updateProject(1, {}).then((res) => {
+    let req = mockFetch.request();
+    deepEqual(req.headers, {
+      custom: 'header'
+    }, 'headers');
+  });
+});
+
+test.updating('updates', ({context, equal}) => {
+
+  return context.projects.updateProject(1, {
+    name: 'test'
+  })
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.body, JSON.stringify({
+        type: 'projects',
+        id: 1,
+        attributes: {
+          name: 'test'
+        }
+      }), 'body');
+    });
+});
+
+test.updating('with relationships', ({context, equal}) => {
+
+  return context.projects
+    .updateProject(1)
+    .relatedTo({
+      user: 2
+    })
+      .then(() => {
 
         let req = mockFetch.request();
-        expect(req.method).to.equal('PATCH');
-      });
-    });
-
-    it('sends global headers', () => {
-
-      return projects.updateProject(1, {}).then((res) => {
-
-        let req = mockFetch.request();
-        expect(req.headers).to.eql({
-          custom: 'header'
-        });
-      });
-    });
-
-    it('updates', () => {
-
-      return projects.updateProject(1, {
-        name: 'test'
-      })
-        .then((res) => {
-
-          let req = mockFetch.request();
-          expect(req.body).to.eql(JSON.stringify({
-            type: 'projects',
-            id: 1,
-            attributes: {
-              name: 'test'
+        equal(req.body, JSON.stringify({
+          type: 'projects',
+          id: 1,
+          relationships: {
+            user: {
+              data: {
+                type: 'users',
+                id: 2
+              }
             }
-          }));
-        });
+          }
+        }), 'body');
+      });
+});
+
+test.deleting('uses DELETE method', ({context, equal}) => {
+
+  return context.projects.deleteProject(1)
+    .then(() => {
+
+      let req = mockFetch.request();
+      equal(req.method, 'DELETE', 'method');
     });
+});
 
-    it('with relationships', () => {
+test.deleting('sends global headers', ({deepEqual, context}) => {
 
-      return projects
-        .updateProject(1)
-        .relatedTo({
-          user: 2
-        })
-          .then(() => {
+  return context.projects.deleteProject(1).then((res) => {
 
-            let req = mockFetch.request();
-            expect(req.body).to.eql(JSON.stringify({
-              type: 'projects',
-              id: 1,
-              relationships: {
-                user: {
-                  data: {
-                    type: 'users',
-                    id: 2
-                  }
-                }
-              }
-            }));
-          });
-    });
+    let req = mockFetch.request();
+    deepEqual(req.headers, {
+      custom: 'header'
+    }, 'headers');
   });
+});
 
-  describe('deleting', () => {
+test.deleting('deletes', ({context, equal}) => {
 
-    it('uses DELETE method', () => {
+  return context.projects.deleteProject(1)
+    .then(() => {
 
-      return projects.deleteProject(1)
-        .then(() => {
-
-          let req = mockFetch.request();
-          expect(req.method).to.equal('DELETE');
-        });
+      let req = mockFetch.request();
+      equal(req.url, '/projects/1', 'url');
     });
+});
 
-    it('sends global headers', () => {
+test.query('encodes special characters for URIs', ({context, equal}) => {
 
-      return projects.deleteProject(1).then((res) => {
+  return context.projects
+    .getProject(123)
+    .query('foo bar', 'baz%bat')
+    .then(res => {
 
-        let req = mockFetch.request();
-        expect(req.headers).to.eql({
-          custom: 'header'
-        });
-      });
+      let req = mockFetch.request();
+      equal(req.url, '/projects/123?foo%20bar=baz%25bat', 'url');
     });
+});
 
-    it('deletes', () => {
+test.query('with string arguments converts query arguments as strings into query string', ({context, equal}) => {
 
-      return projects.deleteProject(1)
-        .then(() => {
+  return context.projects
+    .getProject(123)
+    .query('foo', 'bar')
+    .then((res) => {
 
-          let req = mockFetch.request();
-          expect(req.url).to.equal('/projects/1');
-        });
+      let req = mockFetch.request();
+      equal(req.url, '/projects/123?foo=bar', 'url');
     });
-  });
+});
 
-  describe('queries', () => {
-    it('encodes special characters for URIs', () => {
+test.query('with string arguments combines query params with params from built-in functions', ({context, equal}) => {
 
-      return projects
-        .getProject(123)
-        .query('foo bar', 'baz%bat')
-        .then(res => {
+  return context.projects
+    .getProject(123)
+    .sort('-createdAt', 'updatedAt')
+    .query('foo', 'bar')
+    .then((res) => {
 
-          let req = mockFetch.request();
-          expect(req.url).to.equal('/projects/123?foo%20bar=baz%25bat');
-        });
+      let req = mockFetch.request();
+      equal(req.url, '/projects/123?sort=-created-at,updated-at&foo=bar', 'url');
     });
+});
 
-    describe('with string arguments', () => {
+test.query('with an object argument supports string values', ({context, equal}) => {
 
-      it('converts query arguments as strings into query string', () => {
+  return context.projects
+    .getProject(123)
+    .query({foo: 'bar'})
+    .then((res) => {
 
-        return projects
-          .getProject(123)
-          .query('foo', 'bar')
-          .then((res) => {
-
-            let req = mockFetch.request();
-            expect(req.url).to.equal('/projects/123?foo=bar');
-          });
-      });
-
-      it('combines query params with params from built-in functions', () => {
-
-        return projects
-          .getProject(123)
-          .sort('-createdAt', 'updatedAt')
-          .query('foo', 'bar')
-          .then((res) => {
-
-            let req = mockFetch.request();
-            expect(req.url).to.equal('/projects/123?sort=-created-at,updated-at&foo=bar');
-          });
-      });
+      let req = mockFetch.request();
+      equal(req.url, '/projects/123?foo=bar', 'url');
     });
+});
 
-    describe('with an object argument', () => {
+test.query('with an object argument supports array values (unkeyed)', ({context, equal}) => {
 
-      it('supports string values', () => {
+  return context.projects
+    .getProject(123)
+    .query({foo: ['bar', 'baz']})
+    .then((res) => {
 
-        return projects
-          .getProject(123)
-          .query({foo: 'bar'})
-          .then((res) => {
-
-            let req = mockFetch.request();
-            expect(req.url).to.equal('/projects/123?foo=bar');
-          });
-      });
-
-      it('supports array values (unkeyed)', () => {
-
-        return projects
-          .getProject(123)
-          .query({foo: ['bar', 'baz']})
-          .then((res) => {
-
-            let req = mockFetch.request();
-            expect(req.url).to.equal('/projects/123?foo%5B%5D=bar&foo%5B%5D=baz');
-          });
-      });
-
-      it('supports object values', () => {
-
-        return projects
-          .getProject(123)
-          .query({foo: {bar: 'baz', bat: 'bing'}})
-          .then((res) => {
-
-            let req = mockFetch.request();
-            expect(req.url).to.equal('/projects/123?foo%5Bbar%5D=baz&foo%5Bbat%5D=bing');
-          });
-      });
-
-      it('supports object values with arrays as their values', () => {
-
-        return projects
-          .getProject(123)
-          .query({foo: {bar: ['baz', 'bat']}})
-          .then((res) => {
-
-            let req = mockFetch.request();
-            expect(req.url).to.equal('/projects/123?foo%5Bbar%5D%5B%5D=baz&foo%5Bbar%5D%5B%5D=bat');
-          });
-      });
+      let req = mockFetch.request();
+      equal(req.url, '/projects/123?foo%5B%5D=bar&foo%5B%5D=baz', 'url');
     });
-  });
+});
+
+test.query('with an object argument supports object values', ({context, equal}) => {
+
+  return context.projects
+    .getProject(123)
+    .query({foo: {bar: 'baz', bat: 'bing'}})
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.url, '/projects/123?foo%5Bbar%5D=baz&foo%5Bbat%5D=bing', 'url');
+    });
+});
+
+test.query('with an object argument supports object values with arrays as their values', ({context, equal}) => {
+
+  return context.projects
+    .getProject(123)
+    .query({foo: {bar: ['baz', 'bat']}})
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.url, '/projects/123?foo%5Bbar%5D%5B%5D=baz&foo%5Bbar%5D%5B%5D=bat', 'url');
+    });
 });
