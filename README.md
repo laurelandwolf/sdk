@@ -144,17 +144,16 @@ npm install
 While writing new tests it is recommended that you start the test server for faster test runs
 
 ```
-npm run test-server
-```
-
-Once the test server is started, you can run
-
-```
 npm test
 ```
 
-For one-off test runs without starting the test server, use
+Once the test server is started, open the browser to the specified url to watch the tests run. a file watcher watches your src and test files and re-runs the tests on file save.
+
+
+### CI Test Runner
+
+For one-off test runs without starting the test server or for running tests on a ci box, use
 
 ```
-npm run tests
+npm run test-ci
 ```

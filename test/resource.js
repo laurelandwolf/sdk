@@ -330,7 +330,7 @@ test.updating('updates', ({context, equal}) => {
 
 
       let req = mockFetch.request();
-      console.log(req);
+
       equal(req.body, JSON.stringify({
         data: {
           type: 'projects',
