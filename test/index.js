@@ -1,86 +1,81 @@
-import {expect} from 'chai';
-import {omit} from 'lodash';
-
+import {namespace} from './utils/testing';
 import sdk, {serialize} from '../src';
 import mockFetch from './mock/fetch';
 
-describe('sdk', () => {
+let test = namespace('sdk');
 
-  before(() => mockFetch.mock());
-  after(() => mockFetch.restore());
+test.beforeEach(() => mockFetch.mock());
+test.afterEach(() => mockFetch.restore());
 
-  it('instance', () => {
+test('instance', ({equal}) => {
 
-    let api = sdk();
-    expect(api).to.be.a('function');
-  });
+  let api = sdk();
+  equal(typeof api, 'function', 'is a function');
+});
 
-  it('request', () => {
+test('request', ({equal}) => {
 
-    let api = sdk();
+  let api = sdk();
 
-    return api()
-      .getProjects()
-        .then((res) => {
+  return api()
+    .getProjects()
+      .then((res) => {
 
-          let req = mockFetch.request();
+        let req = mockFetch.request();
 
-          expect(req.method).to.equal('GET');
-          expect(res.status).to.equal(200);
-        });
-  });
+        equal(req.method, 'GET', 'GET requests');
+        equal(res.status, 200, 'successful request');
+      });
+});
 
-  it('default headers', () => {
+test('default headers', ({deepEqual}) => {
 
-    let api = sdk();
+  let api = sdk();
 
-    expect(api().config.headers).to.eql({
-      'Content-Type': 'application/vnd.api+json',
-      'Accept': 'application/vnd.api+json'
-    });
-  });
+  deepEqual(api().config.headers, {
+    'Content-Type': 'application/vnd.api+json',
+    'Accept': 'application/vnd.api+json'
+  }, 'configured headers');
+});
 
-  it('custom headers', () => {
+test('custom headers', ({equal}) => {
 
-    let api = sdk({
-      headers: {
-        custom: 'header'
-      }
-    });
-
-    expect(api().config.headers).to.contain({
+  let api = sdk({
+    headers: {
       custom: 'header'
-    });
+    }
   });
 
-  it('sets origin', () => {
+  equal(api().config.headers.custom, 'header', 'custom header set');
+});
 
-    let api = sdk({
-      origin: 'http://api.com'
-    });
+test('sets origin', ({equal}) => {
 
-    expect(api().config.origin).to.equal('http://api.com');
+  let api = sdk({
+    origin: 'http://api.com'
   });
 
-  it('api overwrites global configs', () => {
+  equal(api().config.origin, 'http://api.com', 'origin set');
+});
 
-    let api = sdk({
-      origin: 'http://global.com'
-    });
+test('api overwrites global configs', ({equal}) => {
 
-    expect(api().config.origin).to.equal('http://global.com');
-
-    let overridenApiConfig = api({
-      origin: 'http://overridden.com'
-    }).config;
-
-    expect(overridenApiConfig.origin).to.equal('http://overridden.com');
+  let api = sdk({
+    origin: 'http://global.com'
   });
 
-  it('exposes the serializer', () => {
+  equal(api().config.origin, 'http://global.com', 'global origin');
 
-    expect(serialize).to.be.an('object');
-    expect(serialize.response).to.be.a('function');
-    expect(serialize.request).to.be.a('function');
-  });
+  let overridenApiConfig = api({
+    origin: 'http://overridden.com'
+  }).config;
+
+  equal(overridenApiConfig.origin, 'http://overridden.com', 'overridden origin');
+});
+
+test('exposes the serializer', ({equal}) => {
+
+  equal(typeof serialize, 'object', 'is an object');
+  equal(typeof serialize.response, 'function', 'response is a function');
+  equal(typeof serialize.request, 'function', 'request is a function');
 });

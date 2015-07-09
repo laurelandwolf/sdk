@@ -1,121 +1,113 @@
-import {expect} from 'chai';
-
 import serialize from '../src/serialize';
 import responseData from './mock/jsonapi-response';
 import arrayResponseData from './mock/jsonapi-response-array';
+import {namespace} from './utils/testing';
 
-describe('serialize', () => {
+let test = namespace('serialize response');
+let res = serialize.response(responseData);
+let req = serialize.request(mockRequestInput());
 
-  describe('response', () => {
+test('sets getter for main data relationships', ({ok}) => {
 
-    let res;
+  ok(res.data.relationships, 'relationships exists');
+});
 
-    beforeEach(() => {
+test('sets getter for included resources', ({ok}) => {
 
-      res = serialize.response(responseData);
-    })
+  ok(res.included, 'included exists');
+});
 
-    it('sets getter for main data relationships', () => {
+test('merges data relationships for a single resource from included list', ({equal}) => {
 
-      expect(res.data.relationships).to.exist;
-    });
+  equal(res.data.relationships.designer.attributes.name, 'Tester', 'name is equal');
+});
 
-    it('sets getter for included resources', () => {
+test('uses resource id as key when data is an array', ({equal}) => {
 
-      expect(res.included).to.exist;
-    });
+  equal(res.data.relationships.someItem[123].attributes.name, 'another', '123 name');
+  equal(res.data.relationships.someItem[2].attributes.name, 'Tester', '2 name');
+});
 
-    it('merges data relationships for a single resource from included list', () => {
+test('maps included array to id-keyed object', ({ok}) => {
 
-      expect(res.data.relationships.designer.attributes.name).to.equal('Tester');
-    });
+  ok(res.included.people, 'people exist');
+  ok(res.included.people[123], 'person exists');
+});
 
-    it('uses resource id as key when data is an array', () => {
+test('merges related included resources', ({equal}) => {
 
-      expect(res.data.relationships.someItem[123].attributes.name).to.equal('another');
-      expect(res.data.relationships.someItem[2].attributes.name).to.equal('Tester');
-    });
+  let name = res.included.list[4321].relationships.author.attributes.name;
+  equal(name, 'another', 'name');
+});
 
-    it('maps included array to id-keyed object', () => {
+test('uses resource id as key when included relationship data is an array', ({equal}) => {
 
-      expect(res.included.people).to.exist;
-      expect(res.included.people[123]).to.exist;
-    });
+  let name = res.included.list[9876].relationships.author[123].attributes.name;
+  equal(name, 'another', 'name');
+});
 
-    it('merges related included resources', () => {
+test('should assign relationships to a key by relationship name, not type name', ({notEqual}) => {
 
-      let name = res.included.list[4321].relationships.author.attributes.name;
-      expect(name).to.equal('another');
-    });
+  let resMultiple = serialize.response(arrayResponseData);
+  notEqual(resMultiple.data[1].relationships.media[24], undefined, 'media exists');
+});
 
-    it('uses resource id as key when included relationship data is an array', () => {
+test('should assign relationships to a key by relationship name, not type name', ({notEqual}) => {
 
-      let name = res.included.list[9876].relationships.author[123].attributes.name;
-      expect(name).to.equal('another');
-    });
+  let resMultiple = serialize.response(arrayResponseData);
+  notEqual(resMultiple.data[1].relationships.media[24], undefined, 'media exists');
+});
 
-    it('should assign relationships to a key by relationship name, not type name', () => {
 
-      let resMultiple = serialize.response(arrayResponseData);
-      expect(resMultiple.data[1].relationships.media[24]).to.not.equal(undefined);
-    });
-  });
+test = namespace('serialize request');
 
-  describe('request', () => {
+test('includes expected keys', ({ok, notOk}) => {
 
-    let req;
+  ok(req.id, 'id exists');
+  ok(req.type, 'type exists');
+  ok(req.attributes, 'attributes exists');
+  ok(req.relationships, 'relationships exists');
+  notOk(req.meh, 'meh does not exist');
+});
 
-    beforeEach(() => {
+test('converts to snake case', ({ok}) => {
 
-      req = serialize.request(mockRequestInput());
-    })
+  ok(req.attributes['some-value'], 'some-value exists');
+});
 
-    it('includes includes expected keys', () => {
+test('formats single relationship', ({deepEqual}) => {
 
-      expect(req).to.include.keys('id', 'type', 'attributes', 'relationships');
-      expect(req.meh).to.not.exist;
-    });
+  deepEqual(req.relationships.author, {
+    data: {type: 'people', id: 123}
+  }, 'formatted single')
+});
 
-    it('converts to snake case', () => {
+test('formats relationship with multiple values', ({deepEqual}) => {
 
-      expect(req.attributes).to.include.key('some-value');
-    });
+  deepEqual(req.relationships.tags, {
+    data: [
+      {type: 'tags', id: 1},
+      {type: 'tags', id: 2}
+    ]
+  }, 'formatted multiple')
+});
 
-    it('formats single relationship', () => {
+test('formats shorthand single relationships', ({deepEqual}) => {
 
-      expect(req.relationships.author).to.eql({
-        data: {type: 'people', id: 123}
-      });
-    });
+  deepEqual(req.relationships.project, {
+    data: {type: 'projects', id: 123}
+  }, 'formatted single');
+});
 
-    it('formats relationship with multiple values', () => {
+test('formats short with multiple relationships', ({deepEqual}) => {
 
-      expect(req.relationships.tags).to.eql({
-        data: [
-          {type: 'tags', id: 1},
-          {type: 'tags', id: 2}
-        ]
-      });
-    });
-
-    it('formats shorthand single relationships', () => {
-
-      expect(req.relationships.project).to.eql({
-        data: {type: 'projects', id: 123}
-      });
-    });
-
-    it('formats short with multiple relationships', () => {
-
-      expect(req.relationships.friends).to.eql({
-        data: [
-          {type: 'friends', id: 1},
-          {type: 'friends', id: 2},
-          {type: 'friends', id: 3}
-        ]
-      });
-    });
-  });
+  deepEqual(req.relationships.friends, {
+    data: [
+      {type: 'friends', id: 1},
+      {type: 'friends', id: 2},
+      {type: 'friends', id: 3}
+    ]
+  }, 'fomatted multiple');
 });
 
 function mockRequestInput () {
