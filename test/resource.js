@@ -5,8 +5,8 @@ import mockFetch from './mock/fetch';
 let test = namespace('resource');
 test.getAll = test.namespace('get all');
 test.getOne = test.namespace('get one');
-test.creating = test.namespace('create');
-test.updating = test.namespace('update');
+test.creating = test.namespace('creating');
+test.updating = test.namespace('updating');
 test.deleting = test.namespace('deleting');
 test.query = test.namespace('query');
 
@@ -248,10 +248,12 @@ test.creating('new', ({equal, context}) => {
       let req = mockFetch.request();
 
       equal(req.body, JSON.stringify({
-        type: 'projects',
-        attributes: {
-          title: 'My Project',
-          location: 'Room'
+        data: {
+          type: 'projects',
+          attributes: {
+            title: 'My Project',
+            location: 'Room'
+          }
         }
       }), 'body');
     });
@@ -275,21 +277,23 @@ test.creating('with relationships', ({context, equal}) => {
         let req = mockFetch.request();
 
         equal(req.body, JSON.stringify({
-          type: 'projects',
-          attributes: {
-            title: 'My Project'
-          },
-          relationships: {
-            user: {
-              data: {
-                type: 'users',
-                id: 123
-              }
+          data: {
+            type: 'projects',
+            attributes: {
+              title: 'My Project'
             },
-            something: {
-              data: {
-                type: 'test',
-                id: 456
+            relationships: {
+              user: {
+                data: {
+                  type: 'users',
+                  id: 123
+                }
+              },
+              something: {
+                data: {
+                  type: 'test',
+                  id: 456
+                }
               }
             }
           }
@@ -324,12 +328,16 @@ test.updating('updates', ({context, equal}) => {
   })
     .then((res) => {
 
+
       let req = mockFetch.request();
+      console.log(req);
       equal(req.body, JSON.stringify({
-        type: 'projects',
-        id: 1,
-        attributes: {
-          name: 'test'
+        data: {
+          type: 'projects',
+          id: 1,
+          attributes: {
+            name: 'test'
+          }
         }
       }), 'body');
     });
@@ -346,13 +354,15 @@ test.updating('with relationships', ({context, equal}) => {
 
         let req = mockFetch.request();
         equal(req.body, JSON.stringify({
-          type: 'projects',
-          id: 1,
-          relationships: {
-            user: {
-              data: {
-                type: 'users',
-                id: 2
+          data: {
+            type: 'projects',
+            id: 1,
+            relationships: {
+              user: {
+                data: {
+                  type: 'users',
+                  id: 2
+                }
               }
             }
           }

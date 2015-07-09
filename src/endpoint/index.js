@@ -64,7 +64,9 @@ function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
         payloadBody = serialize.request(payload);
       }
 
-      req[method.toLowerCase()](requestUri, payloadBody)
+      req[method.toLowerCase()](requestUri, {
+        data: payloadBody
+      })
         .then((res) => {
 
           res.body = serialize.response(res.body);
