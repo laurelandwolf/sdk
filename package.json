@@ -6,7 +6,7 @@
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
     "test": "npm run lint && prova test/*.js -b -t babelify",
-    "test-ci": "prova test/*.js -b -l phantom -e -q",
+    "test-ci": "prova test/*.js -b -l chrome -e -q",
     "lint": "lw lint src"
   },
   "author": "Laurel & Wolf",
