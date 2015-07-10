@@ -25,10 +25,15 @@ function api (config = {}) {
     type: 'designers'
   });
 
+  let rooms = makeResource({
+    type: 'rooms'
+  });
+
   return assign(
     {config},
     projects,
-    designers
+    designers,
+    rooms
   );
 }
 

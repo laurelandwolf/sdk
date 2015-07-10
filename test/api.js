@@ -24,3 +24,14 @@ test('designers', ({equal}) => {
   equal(typeof a.updateDesigner, 'function', 'PATCH designers/:id');
   equal(typeof a.deleteDesigner, 'function', 'DELETE designers/:id');
 });
+
+test('rooms', ({equal}) => {
+
+  let a = api();
+
+  equal(typeof a.getRooms, 'function', 'GET rooms');
+  equal(typeof a.getRoom, 'function', 'GET rooms/:id');
+  equal(typeof a.createRoom, 'function', 'POST rooms');
+  equal(typeof a.updateRoom, 'function', 'PATCH rooms/:id');
+  equal(typeof a.deleteRoom, 'function', 'DELETE rooms/:id');
+});
