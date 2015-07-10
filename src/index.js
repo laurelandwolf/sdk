@@ -6,6 +6,7 @@ import {merge} from 'lodash';
 
 import api from './api';
 import serialize from './serialize';
+import format from './format';
 
 export default function sdk (globalSpec = {}) {
 
@@ -27,5 +28,6 @@ export default function sdk (globalSpec = {}) {
 }
 
 export {
-  serialize
+  serialize,
+  format
 };

@@ -1,5 +1,5 @@
 import {namespace} from './utils/testing';
-import sdk, {serialize} from '../src';
+import sdk, {serialize, format} from '../src';
 import mockFetch from './mock/fetch';
 
 let test = namespace('sdk');
@@ -78,4 +78,11 @@ test('exposes the serializer', ({equal}) => {
   equal(typeof serialize, 'object', 'is an object');
   equal(typeof serialize.response, 'function', 'response is a function');
   equal(typeof serialize.request, 'function', 'request is a function');
+});
+
+test('exposes the formatter', ({equal}) => {
+
+  equal(typeof format, 'object', 'is an object');
+  equal(typeof format.camelCase, 'function', 'camelCase is a function');
+  equal(typeof format.snakeCase, 'function', 'snakeCase is a function');
 });

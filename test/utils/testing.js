@@ -2,8 +2,6 @@ import tape from 'prova';
 import {merge, isFunction} from 'lodash';
 import isPromise from 'is-promise';
 
-// TODO: pull out into tessed module
-
 function namespace (name, setup = {}) {
 
   let beforeEach = setup.beforeEach || [];
