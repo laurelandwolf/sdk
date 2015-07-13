@@ -29,11 +29,17 @@ function api (config = {}) {
     type: 'rooms'
   });
 
+  let recipient = makeResource({
+    type: 'recipient',
+    singleton: true
+  });
+
   return assign(
     {config},
     projects,
     designers,
-    rooms
+    rooms,
+    recipient
   );
 }
 

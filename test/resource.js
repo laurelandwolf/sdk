@@ -10,7 +10,7 @@ test.updating = test.namespace('updating');
 test.deleting = test.namespace('deleting');
 test.query = test.namespace('query');
 
-test.singular = test.namespace('singular')
+test.singleton = test.namespace('singleton')
 
 let projects;
 
@@ -488,17 +488,17 @@ test.query('with an object argument supports object values with arrays as their 
     });
 });
 
-test.singular.beforeEach(() => {
+test.singleton.beforeEach(() => {
 
   let r = resource({
     type: 'recipient',
-    singular: true
+    singleton: true
   });
 
   return {resource: r};
 });
 
-test.singular('GET', ({context, equal}) => {
+test.singleton('GET', ({context, equal}) => {
 
   return context.resource.getRecipient()
     .then((res) => {
@@ -509,7 +509,7 @@ test.singular('GET', ({context, equal}) => {
     });
 });
 
-test.singular('PATCH', ({context, equal}) => {
+test.singleton('PATCH', ({context, equal}) => {
 
   return context.resource.updateRecipient()
     .then((res) => {
@@ -520,7 +520,7 @@ test.singular('PATCH', ({context, equal}) => {
     });
 });
 
-test.singular('POST', ({context, equal}) => {
+test.singleton('POST', ({context, equal}) => {
 
   return context.resource.createRecipient()
     .then((res) => {
@@ -531,7 +531,7 @@ test.singular('POST', ({context, equal}) => {
     });
 });
 
-test.singular('DELETE', ({context, equal}) => {
+test.singleton('DELETE', ({context, equal}) => {
 
   return context.resource.deleteRecipient()
     .then((res) => {
@@ -540,4 +540,9 @@ test.singular('DELETE', ({context, equal}) => {
       equal(req.method, 'DELETE', 'DELETE request');
       equal(req.url, '/recipient', 'recipient URL')
     });
+});
+
+test.singleton('GET (collection)', ({context, equal}) => {
+
+  equal(context.resource.getRecipients, undefined);
 });

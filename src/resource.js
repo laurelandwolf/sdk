@@ -10,12 +10,12 @@ function resourceName (method, type, plural = false) {
 
 function resource (spec, globalConfig = {}) {
 
-  let {type, singular} = defaults(spec, {singular: false});
+  let {type, singleton} = defaults(spec, {singleton: false});
 
   function uri (id) {
 
     let u = `/${type}`;
-    if (!singular && id !== undefined) {
+    if (!singleton && id !== undefined) {
       u += `/${id}`;
     }
 
@@ -83,7 +83,7 @@ function resource (spec, globalConfig = {}) {
     [resourceName('delete', type)]: del
   };
 
-  if (!singular) {
+  if (!singleton) {
     routes[resourceName('get', type, true)] = getAll;
   }
 
