@@ -544,5 +544,5 @@ test.singleton('DELETE', ({context, equal}) => {
 
 test.singleton('GET (collection)', ({context, equal}) => {
 
-  equal(context.resource.getRecipients, undefined);
+  equal(context.resource.getRecipients, undefined, 'should not be present');
 });
