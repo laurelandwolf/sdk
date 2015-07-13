@@ -29,8 +29,9 @@ function api (config = {}) {
     type: 'rooms'
   });
 
-  let recipients = makeResource({
-    type: 'recipients'
+  let recipient = makeResource({
+    type: 'recipient',
+    singleton: true
   });
 
   return assign(
@@ -38,7 +39,7 @@ function api (config = {}) {
     projects,
     designers,
     rooms,
-    recipients
+    recipient
   );
 }
 

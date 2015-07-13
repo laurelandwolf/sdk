@@ -1,4 +1,4 @@
-import {capitalize} from 'lodash';
+import {capitalize, defaults} from 'lodash';
 import pluralize from 'pluralize';
 
 import endpoint from './endpoint';
@@ -10,14 +10,23 @@ function resourceName (method, type, plural = false) {
 
 function resource (spec, globalConfig = {}) {
 
-  let {type} = spec;
-  let uri = `/${type}`;
+  let {type, singleton} = defaults(spec, {singleton: false});
+
+  function uri (id) {
+
+    let u = `/${type}`;
+    if (!singleton && id !== undefined) {
+      u += `/${id}`;
+    }
+
+    return u;
+  }
 
   // Get All
   function getAll () {
 
     return endpoint({
-      uri,
+      uri: uri(),
       method: 'GET'
     }, globalConfig);
   }
@@ -25,7 +34,7 @@ function resource (spec, globalConfig = {}) {
   function getOne (id) {
 
     return endpoint({
-      uri: `${uri}/${id}`,
+      uri: uri(id),
       method: 'GET'
     }, globalConfig);
   }
@@ -38,7 +47,7 @@ function resource (spec, globalConfig = {}) {
     };
 
     return endpoint({
-      uri,
+      uri: uri(),
       method: 'POST',
       payload
     }, globalConfig);
@@ -53,7 +62,7 @@ function resource (spec, globalConfig = {}) {
     };
 
     return endpoint({
-      uri: `${uri}/${id}`,
+      uri: uri(id),
       method: 'PATCH',
       payload
     }, globalConfig);
@@ -62,18 +71,23 @@ function resource (spec, globalConfig = {}) {
   function del (id) {
 
     return endpoint({
-      uri: `${uri}/${id}`,
+      uri: uri(id),
       method: 'DELETE'
     }, globalConfig);
   }
 
-  return {
-    [resourceName('get', type, true)]: getAll,
+  let routes = {
     [resourceName('get', type)]: getOne,
     [resourceName('create', type)]: create,
     [resourceName('update', type)]: update,
     [resourceName('delete', type)]: del
   };
+
+  if (!singleton) {
+    routes[resourceName('get', type, true)] = getAll;
+  }
+
+  return routes;
 }
 
 export default resource;
