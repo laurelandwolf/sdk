@@ -10,6 +10,8 @@ test.updating = test.namespace('updating');
 test.deleting = test.namespace('deleting');
 test.query = test.namespace('query');
 
+test.singular = test.namespace('singular')
+
 let projects;
 
 test.beforeEach(() => {
@@ -483,5 +485,59 @@ test.query('with an object argument supports object values with arrays as their 
 
       let req = mockFetch.request();
       equal(req.url, '/projects/123?foo%5Bbar%5D%5B%5D=baz&foo%5Bbar%5D%5B%5D=bat', 'url');
+    });
+});
+
+test.singular.beforeEach(() => {
+
+  let r = resource({
+    type: 'recipient',
+    singular: true
+  });
+
+  return {resource: r};
+});
+
+test.singular('GET', ({context, equal}) => {
+
+  return context.resource.getRecipient()
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.method, 'GET', 'GET request');
+      equal(req.url, '/recipient', 'recipient URL')
+    });
+});
+
+test.singular('PATCH', ({context, equal}) => {
+
+  return context.resource.updateRecipient()
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.method, 'PATCH', 'PATCH request');
+      equal(req.url, '/recipient', 'recipient URL')
+    });
+});
+
+test.singular('POST', ({context, equal}) => {
+
+  return context.resource.createRecipient()
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.method, 'POST', 'POST request');
+      equal(req.url, '/recipient', 'recipient URL')
+    });
+});
+
+test.singular('DELETE', ({context, equal}) => {
+
+  return context.resource.deleteRecipient()
+    .then((res) => {
+
+      let req = mockFetch.request();
+      equal(req.method, 'DELETE', 'DELETE request');
+      equal(req.url, '/recipient', 'recipient URL')
     });
 });

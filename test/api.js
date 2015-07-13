@@ -8,8 +8,7 @@ let test = namespace('api');
 let resources = [
   'projects',
   'designers',
-  'rooms',
-  'recipients'
+  'rooms'
 ];
 
 resources.forEach((resource) => {
