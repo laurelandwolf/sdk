@@ -35,3 +35,14 @@ test('rooms', ({equal}) => {
   equal(typeof a.updateRoom, 'function', 'PATCH rooms/:id');
   equal(typeof a.deleteRoom, 'function', 'DELETE rooms/:id');
 });
+
+test('recipients', ({equal}) => {
+
+  let a = api();
+
+  equal(typeof a.getRecipients, 'function', 'GET recipients');
+  equal(typeof a.getRecipient, 'function', 'GET recipients/:id');
+  equal(typeof a.createRecipient, 'function', 'POST recipients');
+  equal(typeof a.updateRecipient, 'function', 'PATCH recipients/:id')
+  equal(typeof a.deleteRecipient, 'function', 'DELETE recipients/:id')
+});
