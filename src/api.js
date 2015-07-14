@@ -40,7 +40,7 @@ function api (config = {}) {
   });
 
   let bankAccount = makeResource({
-    type: 'bankAccount',
+    type: 'bank-account',
     singleton: true
   });
 

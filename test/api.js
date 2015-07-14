@@ -1,6 +1,6 @@
 import {namespace} from './utils/testing';
 import api from '../src/api';
-import {capitalize} from 'lodash';
+import {capitalize, camelCase} from 'lodash';
 import pluralize from 'pluralize';
 import mockFetch from './mock/fetch';
 import r from '../src/resource';
@@ -16,14 +16,14 @@ let resources = [
 let singletonResources = [
   'recipient',
   'card',
-  'bankAccount'
+  'bank-account'
 ];
 
 test('setup', () => mockFetch.mock());
 
 resources.forEach((resource) => {
 
-  let endpointName = capitalize(resource);
+  let endpointName = capitalize(camelCase(resource));
 
   test(resource, ({equal}) => {
 
@@ -39,7 +39,7 @@ resources.forEach((resource) => {
 
 singletonResources.forEach((resource) => {
 
-  let endpointName = capitalize(resource);
+  let endpointName = capitalize(camelCase(resource));
 
   test(resource, ({equal}) => {
 
@@ -52,10 +52,25 @@ singletonResources.forEach((resource) => {
   })
 });
 
-test('multi-string resource names', ({equal}) => {
+test('multi-string resource names (camelCase)', ({equal}) => {
 
   let bankAccount = r({
     type: 'bankAccount',
+    singleton: true
+  });
+
+  return bankAccount.getBankAccount()
+    .then((res) => {
+      let req = mockFetch.request();
+
+      equal(req.url, '/bankAccount', 'url');
+    });
+});
+
+test('multi-string resource names (kebab-case)', ({equal}) => {
+
+  let bankAccount = r({
+    type: 'bank-account',
     singleton: true
   });
 
