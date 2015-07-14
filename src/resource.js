@@ -1,6 +1,7 @@
 import {capitalize, defaults, camelCase} from 'lodash';
 import pluralize from 'pluralize';
 
+import validate from './validate';
 import endpoint from './endpoint';
 
 function resourceName (method, type, plural = false) {
@@ -11,6 +12,8 @@ function resourceName (method, type, plural = false) {
 function resource (spec, globalConfig = {}) {
 
   let {type, singleton} = defaults(spec, {singleton: false});
+
+  validate.type(type);
 
   function uri (id) {
 

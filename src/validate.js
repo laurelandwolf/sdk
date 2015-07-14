@@ -9,6 +9,18 @@ function attributes (obj) {
   }
 }
 
+function type (name) {
+
+  if (!name && name !== 0) {
+    throw new TypeError('Resource type is required');
+  }
+
+  if (name.match(/[^(a-z)\d\-]/)) {
+    throw new TypeError('Invalid resource type');
+  }
+}
+
 export default {
-  attributes
+  attributes,
+  type
 };
