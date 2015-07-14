@@ -1,11 +1,11 @@
-import {capitalize, defaults} from 'lodash';
+import {capitalize, defaults, camelCase} from 'lodash';
 import pluralize from 'pluralize';
 
 import endpoint from './endpoint';
 
 function resourceName (method, type, plural = false) {
 
-  return `${method.toLowerCase()}${capitalize(pluralize(type, plural ? 2 : 1))}`;
+  return `${method.toLowerCase()}${capitalize(pluralize(camelCase(type), plural ? 2 : 1))}`;
 }
 
 function resource (spec, globalConfig = {}) {

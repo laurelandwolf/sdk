@@ -34,12 +34,24 @@ function api (config = {}) {
     singleton: true
   });
 
+  let card = makeResource({
+    type: 'card',
+    singleton: true
+  });
+
+  let bankAccount = makeResource({
+    type: 'bank-account',
+    singleton: true
+  });
+
   return assign(
     {config},
     projects,
     designers,
     rooms,
-    recipient
+    recipient,
+    card,
+    bankAccount
   );
 }
 
