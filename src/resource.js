@@ -55,6 +55,11 @@ function resource (spec, globalConfig = {}) {
 
   function update (id, attributes) {
 
+    if (typeof id === 'object') {
+      attributes = id;
+      id = null;
+    }
+
     let payload = {
       type,
       id,
