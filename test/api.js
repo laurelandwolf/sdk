@@ -19,6 +19,8 @@ let singletonResources = [
   'bankAccount'
 ];
 
+test('setup', () => mockFetch.mock());
+
 resources.forEach((resource) => {
 
   let endpointName = capitalize(resource);
@@ -52,8 +54,6 @@ singletonResources.forEach((resource) => {
 
 test('multi-string resource names', ({equal}) => {
 
-  mockFetch.mock();
-
   let bankAccount = r({
     type: 'bankAccount',
     singleton: true
@@ -66,3 +66,5 @@ test('multi-string resource names', ({equal}) => {
       equal(req.url, '/bank-account', 'url');
     });
 });
+
+test('teardown', () => mockFetch.mock());
