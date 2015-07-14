@@ -29,6 +29,10 @@ function api (config = {}) {
     type: 'rooms'
   });
 
+  let floorPlans = makeResource({
+    type: 'floor-plans'
+  });
+
   let recipient = makeResource({
     type: 'recipient',
     singleton: true
@@ -51,7 +55,8 @@ function api (config = {}) {
     rooms,
     recipient,
     card,
-    bankAccount
+    bankAccount,
+    floorPlans
   );
 }
 
