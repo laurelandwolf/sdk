@@ -1,4 +1,4 @@
-import {capitalize, defaults} from 'lodash';
+import {capitalize, defaults, kebabCase} from 'lodash';
 import pluralize from 'pluralize';
 
 import endpoint from './endpoint';
@@ -11,10 +11,11 @@ function resourceName (method, type, plural = false) {
 function resource (spec, globalConfig = {}) {
 
   let {type, singleton} = defaults(spec, {singleton: false});
+  let kebabType = kebabCase(type);
 
   function uri (id) {
 
-    let u = `/${type}`;
+    let u = `/${kebabType}`;
     if (!singleton && id !== undefined) {
       u += `/${id}`;
     }
