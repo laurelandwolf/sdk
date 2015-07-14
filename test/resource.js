@@ -509,20 +509,21 @@ test.singleton('GET', ({context, equal}) => {
     });
 });
 
-test.singleton('PATCH', ({context, equal}) => {
+test.singleton('PATCH', ({context, equal, deepEqual}) => {
 
-  return context.resource.updateRecipient()
+  return context.resource.updateRecipient({taxId: '000000000'})
     .then((res) => {
 
       let req = mockFetch.request();
       equal(req.method, 'PATCH', 'PATCH request');
-      equal(req.url, '/recipient', 'recipient URL')
+      equal(req.url, '/recipient', 'recipient URL');
+      deepEqual(JSON.parse(req.body), {data: {type: 'recipient', attributes: {'tax-id': '000000000'}}});
     });
 });
 
 test.singleton('POST', ({context, equal}) => {
 
-  return context.resource.createRecipient()
+  return context.resource.createRecipient({taxId: '000000000'})
     .then((res) => {
 
       let req = mockFetch.request();
