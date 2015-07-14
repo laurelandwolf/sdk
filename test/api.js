@@ -52,19 +52,11 @@ singletonResources.forEach((resource) => {
   })
 });
 
-test('multi-string resource names (camelCase)', ({equal}) => {
+test('multi-string resource names (camelCase)', ({throws}) => {
 
-  let bankAccount = r({
-    type: 'bankAccount',
-    singleton: true
-  });
+  let bankAccount = () => r({type: 'bankAccount'});
 
-  return bankAccount.getBankAccount()
-    .then((res) => {
-      let req = mockFetch.request();
-
-      equal(req.url, '/bankAccount', 'url');
-    });
+  throws(bankAccount, TypeError, '#resource uses type validation');
 });
 
 test('multi-string resource names (kebab-case)', ({equal}) => {
