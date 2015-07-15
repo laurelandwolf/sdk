@@ -33,6 +33,10 @@ function api (config = {}) {
     type: 'floor-plans'
   });
 
+  let comments = makeResource({
+    type: 'comments'
+  });
+
   let recipient = makeResource({
     type: 'recipient',
     singleton: true
@@ -53,10 +57,11 @@ function api (config = {}) {
     projects,
     designers,
     rooms,
+    floorPlans,
+    comments,
     recipient,
     card,
-    bankAccount,
-    floorPlans
+    bankAccount
   );
 }
 
