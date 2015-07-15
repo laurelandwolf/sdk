@@ -435,6 +435,22 @@ test.deleting('deletes', ({context, equal}) => {
     });
 });
 
+test.deleting('correctly handles 204 status code', ({context, equal}) => {
+
+  mockFetch.restore();
+  mockFetch.mock({
+    response: {
+      status: 204
+    }
+  });
+
+  return context.projects.deleteProject(1)
+    .then((res) => {
+
+      equal(res.body, undefined, 'no body returned');
+    });
+});
+
 test.query('encodes special characters for URIs', ({context, equal}) => {
 
   return context.projects

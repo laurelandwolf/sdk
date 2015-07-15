@@ -28,7 +28,7 @@ function mockedFetch (_config_ = {}) {
     return new Promise(function (resolve, reject) {
 
       // Defaults to responding with the original config
-      let body = res.body || config;
+      let body = res.body !== undefined ? res.body : config;
 
       let response = {
         status: res.status || 200,
