@@ -23,20 +23,33 @@ function request (spec = {}) {
 
       fetch(joinPath(origin, url), fetchConfig)
         .then((response) => {
-          response.json().then((body) => {
 
-            if (response.status < 400) {
-              resolve({
-                status: response.status,
-                headers: response.headers,
-                body
-              });
-            }
-            else {
-              let responseObject = merge(pick(response, 'status', 'statusText'), {body});
-              reject(responseObject);
-            }
-          });
+          // NOTE: there is no body on a 204 response,
+          //       so there will be nothing to parse
+
+          if (response.status === 204) {
+            resolve({
+              status: response.status,
+              headers: response.headers
+            });
+          }
+          else {
+            response.json().then((body) => {
+
+              if (response.status < 400) {
+                resolve({
+                  status: response.status,
+                  headers: response.headers,
+                  body
+                });
+              }
+              else {
+                let responseObject = merge(pick(response, 'status', 'statusText'), {body});
+                reject(responseObject);
+              }
+            });
+          }
+
         });
     });
   }
