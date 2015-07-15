@@ -11,6 +11,7 @@ let resources = [
   'projects',
   'designers',
   'rooms',
+  'floor-plans'
 ];
 
 let singletonResources = [
