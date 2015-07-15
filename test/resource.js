@@ -261,7 +261,7 @@ test.creating('new', ({equal, context}) => {
     });
 });
 
-test.creating('with relationships', ({context, equal}) => {
+test.creating('with relationships', ({context, deepEqual}) => {
 
   return context.projects
     .createProject({
@@ -278,7 +278,7 @@ test.creating('with relationships', ({context, equal}) => {
 
         let req = mockFetch.request();
 
-        equal(req.body, JSON.stringify({
+        deepEqual(JSON.parse(req.body), {
           data: {
             type: 'projects',
             attributes: {
@@ -299,7 +299,39 @@ test.creating('with relationships', ({context, equal}) => {
               }
             }
           }
-        }), 'body');
+        }, 'request body');
+      });
+});
+
+test.creating('relationship with id as a string', function ({context, deepEqual}) {
+
+  return context.projects
+    .createProject({
+      title: 'My Project'
+    })
+    .relatedTo({
+      project: '123'
+    })
+      .then((res) => {
+
+        let req = mockFetch.request();
+
+        deepEqual(JSON.parse(req.body), {
+          data: {
+            type: 'projects',
+            attributes: {
+              title: 'My Project'
+            },
+            relationships: {
+              project: {
+                data: {
+                  type: 'projects',
+                  id: 123
+                }
+              }
+            }
+          }
+        }, 'request body');
       });
 });
 

@@ -1,5 +1,6 @@
-import _, {map, isNumber} from 'lodash';
+import _, {map} from 'lodash';
 import pluralize from 'pluralize';
+import isNumber from 'is-number';
 
 function formatRequestRelationships (relationships) {
 
@@ -12,7 +13,7 @@ function formatRequestRelationships (relationships) {
         return [name, {
           data: {
             type: pluralize(name, 2),
-            id: data
+            id: Number(data)
           }
         }];
       }
@@ -23,7 +24,7 @@ function formatRequestRelationships (relationships) {
             if (isNumber(val)) {
               return {
                 type: pluralize(name, 2),
-                id: val
+                id: Number(val)
               };
             }
             else {
