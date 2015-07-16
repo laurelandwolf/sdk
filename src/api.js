@@ -37,6 +37,22 @@ function api (config = {}) {
     type: 'comments'
   });
 
+  let photos = makeResource({
+    type: 'photos'
+  });
+
+  let inspirationLinks = makeResource({
+    type: 'inspiration-links'
+  });
+
+  let inspirationImages = makeResource({
+    type: 'inspiration-images'
+  });
+
+  let furniture = makeResource({
+    type: 'furniture'
+  });
+
   let recipient = makeResource({
     type: 'recipient',
     singleton: true
@@ -54,11 +70,19 @@ function api (config = {}) {
 
   return assign(
     {config},
+
+    // Resources
     projects,
     designers,
     rooms,
     floorPlans,
     comments,
+    photos,
+    inspirationLinks,
+    inspirationImages,
+    furniture,
+
+    // Singletons
     recipient,
     card,
     bankAccount
