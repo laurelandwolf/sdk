@@ -1,10 +1,11 @@
-import _, {isString, map} from 'lodash';
+import _, {isString, map, isObject} from 'lodash';
 
 import {snakeCase} from '../format';
 
 function qslist (name) {
 
   let list = [];
+  let includesWithOptions = [];
 
   function parseList (includes, ...args) {
 
@@ -19,7 +20,18 @@ function qslist (name) {
         // i.e. - {rooms: ['inspirationLinks']}
         return map(item, (vals, field) => {
 
-          return map(vals, (val) => `${snakeCase(field)}.${snakeCase(val)}`);
+          return map(vals, (val) => {
+
+            let type = val;
+
+            // i.e. - {rooms: [{type: 'photos', ignoreRelationships: ['rooms']}]}
+            if (isObject(type)) {
+              type = val.type;
+              includesWithOptions.push(val);
+            }
+
+            return `${snakeCase(field)}.${snakeCase(type)}`
+          });
         });
       })
       .flattenDeep()
@@ -42,6 +54,11 @@ function qslist (name) {
     count () {
 
       return list.length;
+    },
+
+    ignoreRelationships () {
+
+      return includesWithOptions;
     }
   };
 }
