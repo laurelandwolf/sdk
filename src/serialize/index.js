@@ -1,4 +1,4 @@
-import {map, forEach, pick, find} from 'lodash';
+import {map, forEach, pick} from 'lodash';
 
 import format from '../format';
 import compileRelationships from './compile-relationships';
