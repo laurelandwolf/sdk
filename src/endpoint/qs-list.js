@@ -30,7 +30,7 @@ function qslist (name) {
               includesWithOptions.push(val);
             }
 
-            return `${snakeCase(field)}.${snakeCase(type)}`
+            return `${snakeCase(field)}.${snakeCase(type)}`;
           });
         });
       })

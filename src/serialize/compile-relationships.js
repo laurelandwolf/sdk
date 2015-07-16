@@ -1,5 +1,36 @@
 import {forEach, find, some} from 'lodash';
 
+function getRelatedResource (item, included) {
+
+  let relatedResource;
+
+  // Already merged, compiled object
+  if(!Array.isArray(included)) {
+    let relItems = included[item.type];
+    if (!relItems) {
+      return;
+    }
+    relatedResource = relItems[item.id];
+  }
+
+  // Raw
+  else {
+    relatedResource = find(included, {type: item.type, id: item.id});
+  }
+
+  return relatedResource;
+}
+
+function shouldMergeResourceAttributes (rules, type) {
+
+  return some(rules, (rule) => {
+
+    if (Array.isArray(rule.ignoreRelationships) && rule.ignoreRelationships.indexOf(type) > -1) {
+      return true;
+    }
+  });
+}
+
 function compileRelationships (resource, included, rules = []) {
 
   // Avoid undefined and maximum callstack errors
@@ -74,37 +105,6 @@ function compileRelationships (resource, included, rules = []) {
   resource.__merged__ = true;
 
   return resource;
-}
-
-function getRelatedResource (item, included) {
-
-  let relatedResource;
-
-  // Already merged, compiled object
-  if(!Array.isArray(included)) {
-    let relItems = included[item.type];
-    if (!relItems) {
-      return;
-    }
-    relatedResource = relItems[item.id];
-  }
-
-  // Raw
-  else {
-    relatedResource = find(included, {type: item.type, id: item.id})
-  }
-
-  return relatedResource
-}
-
-function shouldMergeResourceAttributes (rules, type) {
-
-  return some(rules, (rule) => {
-
-    if (Array.isArray(rule.ignoreRelationships) && rule.ignoreRelationships.indexOf(type) > -1) {
-      return true;
-    }
-  });
 }
 
 export default compileRelationships;
