@@ -1,6 +1,8 @@
 import {forEach, find} from 'lodash';
 
-function defineRelationships (resource, included) {
+function defineRelationships (resource, included, rules) {
+
+  rules = rules || {};
 
   // Avoid undefined and maximum callstack errors
   if (!resource || resource.__merged__) {
@@ -23,6 +25,13 @@ function defineRelationships (resource, included) {
         // Catches edge case where data is null or undefined
         if (!originalRels[relationshipName].data) {
           return originalRels[relationshipName].data;
+        }
+
+        // Ignore nested relationships
+        // i.e. - rooms have photos which are related to rooms
+        if (Array.isArray(rules.ignoreRelationships) && rules.ignoreRelationships.indexOf(originalRels[relationshipName].data.type) > -1) {
+          mergedRelationships[relationshipName] = originalRels[relationshipName].data;
+          return;
         }
 
         // data is an Array, meaning it's multiple items

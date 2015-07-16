@@ -71,7 +71,9 @@ function endpoint ({uri = '/', method = 'GET', payload} = {}, apiConfig) {
 
           // NOTE: There will be no body on a 204 response
 
-          res.body = res.body && serialize.response(res.body);
+          res.body = res.body && serialize.response(res.body, {
+            ignoreRelationships: includes.ignoreRelationships()
+          });
           return res;
         })
         .then(resolve)

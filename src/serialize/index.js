@@ -1,10 +1,12 @@
-import {map, forEach, pick} from 'lodash';
+import {map, forEach, pick, find} from 'lodash';
 
 import format from '../format';
 import defineRelationships from './define-relationships';
 import formatRequestRelationships from './format-request-relationships';
 
-function serializeResponse (originalResponse) {
+function serializeResponse (originalResponse, options) {
+
+  options = options || {};
 
   let response = format.camelCase(originalResponse);
 
@@ -26,13 +28,15 @@ function serializeResponse (originalResponse) {
 
       forEach(response.included, (resource) => {
 
+        let rules = find(options.ignoreRelationships, {type: resource.type});
+
         root[resource.type] = root[resource.type] || {};
 
         Object.defineProperty(root[resource.type], resource.id, {
           enumerable: true,
           get () {
 
-            return defineRelationships(resource, response.included);
+            return defineRelationships(resource, response.included, rules);
           }
         });
       });
