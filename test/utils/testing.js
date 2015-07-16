@@ -6,10 +6,11 @@ function namespace (name, setup = {}) {
 
   let beforeEach = setup.beforeEach || [];
   let afterEach = setup.afterEach || [];
+  let tapeFn = tape;
 
   let tester = function (name2, fn) {
 
-    return tape(name + ' -> ' + name2, (t) => {
+    return tapeFn(name + ' -> ' + name2, (t) => {
 
       let end = t.end.bind(t);
 
@@ -40,13 +41,8 @@ function namespace (name, setup = {}) {
     });
   }
 
-  tester.beforeEach = (fn) => {
-    beforeEach.push(fn);
-  };
-
-  tester.afterEach = (fn) => {
-    afterEach.push(fn);
-  };
+  tester.beforeEach = (fn) => beforeEach.push(fn);
+  tester.afterEach = (fn) => afterEach.push(fn);
 
   tester.namespace = (name2) => {
 
@@ -54,6 +50,13 @@ function namespace (name, setup = {}) {
       beforeEach,
       afterEach,
     });
+  };
+
+  tester.only = (...args) => {
+
+    tapeFn = tape.only;
+    tester(...args);
+    tapeFn = tape;
   };
 
   return tester;

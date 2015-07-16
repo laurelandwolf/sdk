@@ -1,67 +1,80 @@
 import serialize from '../src/serialize';
 import responseData from './mock/jsonapi-response';
 import arrayResponseData from './mock/jsonapi-response-array';
+import circularRefsData from './mock/circular-refs.json';
 import {namespace} from './utils/testing';
 
-let test = namespace('serialize response');
+let test = namespace('serialize');
+test.response = test.namespace('response');
 let res = serialize.response(responseData);
 let req = serialize.request(mockRequestInput());
 
-test('sets getter for main data relationships', ({ok}) => {
+test.response('sets getter for main data relationships', ({ok}) => {
 
   ok(res.data.relationships, 'relationships exists');
 });
 
-test('sets getter for included resources', ({ok}) => {
+test.response('sets getter for included resources', ({ok}) => {
 
   ok(res.included, 'included exists');
 });
 
-test('merges data relationships for a single resource from included list', ({equal}) => {
+test.response('merges data relationships for a single resource from included list', ({equal}) => {
 
   equal(res.data.relationships.designer.attributes.name, 'Tester', 'name is equal');
 });
 
-test('uses resource id as key when data is an array', ({equal}) => {
+test.response('uses resource id as key when data is an array', ({equal}) => {
 
   equal(res.data.relationships.someItem[123].attributes.name, 'another', '123 name');
   equal(res.data.relationships.someItem[2].attributes.name, 'Tester', '2 name');
 });
 
-test('maps included array to id-keyed object', ({ok}) => {
+test.response('maps included array to id-keyed object', ({ok}) => {
 
   ok(res.included.people, 'people exist');
   ok(res.included.people[123], 'person exists');
 });
 
-test('merges related included resources', ({equal}) => {
+test.response('merges related included resources', ({equal}) => {
 
   let name = res.included.list[4321].relationships.author.attributes.name;
   equal(name, 'another', 'name');
 });
 
-test('uses resource id as key when included relationship data is an array', ({equal}) => {
+test.response('merges realted incuded resources with circular relationships', ({pass, fail}) => {
+
+  try {
+    let circularRes = serialize.response(circularRefsData);
+    pass('serialized circular response');
+  }
+  catch (e) {
+    fail(e.message);
+  }
+});
+
+test.response('uses resource id as key when included relationship data is an array', ({equal}) => {
 
   let name = res.included.list[9876].relationships.author[123].attributes.name;
   equal(name, 'another', 'name');
 });
 
-test('should assign relationships to a key by relationship name, not type name', ({notEqual}) => {
+test.response('should assign relationships to a key by relationship name, not type name', ({notEqual}) => {
 
   let resMultiple = serialize.response(arrayResponseData);
   notEqual(resMultiple.data[1].relationships.media[24], undefined, 'media exists');
 });
 
-test('should assign relationships to a key by relationship name, not type name', ({notEqual}) => {
+test.response('should assign relationships to a key by relationship name, not type name', ({notEqual}) => {
 
   let resMultiple = serialize.response(arrayResponseData);
   notEqual(resMultiple.data[1].relationships.media[24], undefined, 'media exists');
 });
 
 
-test = namespace('serialize request');
+test.request = test.namespace('request');
 
-test('includes expected keys', ({ok, notOk}) => {
+test.request('includes expected keys', ({ok, notOk}) => {
 
   ok(req.id, 'id exists');
   ok(req.type, 'type exists');
@@ -70,19 +83,19 @@ test('includes expected keys', ({ok, notOk}) => {
   notOk(req.meh, 'meh does not exist');
 });
 
-test('converts to snake case', ({ok}) => {
+test.request('converts to snake case', ({ok}) => {
 
   ok(req.attributes['some-value'], 'some-value exists');
 });
 
-test('formats single relationship', ({deepEqual}) => {
+test.request('formats single relationship', ({deepEqual}) => {
 
   deepEqual(req.relationships.author, {
     data: {type: 'people', id: 123}
   }, 'formatted single')
 });
 
-test('formats relationship with multiple values', ({deepEqual}) => {
+test.request('formats relationship with multiple values', ({deepEqual}) => {
 
   deepEqual(req.relationships.tags, {
     data: [
@@ -92,14 +105,14 @@ test('formats relationship with multiple values', ({deepEqual}) => {
   }, 'formatted multiple')
 });
 
-test('formats shorthand single relationships', ({deepEqual}) => {
+test.request('formats shorthand single relationships', ({deepEqual}) => {
 
   deepEqual(req.relationships.project, {
     data: {type: 'projects', id: 123}
   }, 'formatted single');
 });
 
-test('formats short with multiple relationships', ({deepEqual}) => {
+test.request('formats short with multiple relationships', ({deepEqual}) => {
 
   deepEqual(req.relationships.friends, {
     data: [
