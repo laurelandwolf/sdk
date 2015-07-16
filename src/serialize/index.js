@@ -1,22 +1,21 @@
 import {map, forEach, pick, find} from 'lodash';
 
 import format from '../format';
-import defineRelationships from './define-relationships';
+import compileRelationships from './compile-relationships';
 import formatRequestRelationships from './format-request-relationships';
 
-function serializeResponse (originalResponse, options) {
-
-  options = options || {};
+function serializeResponse (originalResponse, options = {}) {
 
   let response = format.camelCase(originalResponse);
+  let {ignoreRelationships} = options;
 
   let data = {
     enumerable: true,
     get () {
 
       return Array.isArray(response.data)
-        ? map(response.data, (resource) => defineRelationships(resource, response.included))
-        : defineRelationships(response.data, response.included);
+        ? map(response.data, (resource) => compileRelationships(resource, this.included, ignoreRelationships))
+        : compileRelationships(response.data, this.included, ignoreRelationships);
     }
   };
 
@@ -28,15 +27,13 @@ function serializeResponse (originalResponse, options) {
 
       forEach(response.included, (resource) => {
 
-        let rules = find(options.ignoreRelationships, {type: resource.type});
-
         root[resource.type] = root[resource.type] || {};
 
         Object.defineProperty(root[resource.type], resource.id, {
           enumerable: true,
           get () {
 
-            return defineRelationships(resource, response.included, rules);
+            return compileRelationships(resource, response.included, ignoreRelationships);
           }
         });
       });

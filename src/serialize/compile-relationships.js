@@ -1,8 +1,6 @@
-import {forEach, find} from 'lodash';
+import {forEach, find, some} from 'lodash';
 
-function defineRelationships (resource, included, rules) {
-
-  rules = rules || {};
+function compileRelationships (resource, included, rules = []) {
 
   // Avoid undefined and maximum callstack errors
   if (!resource || resource.__merged__) {
@@ -29,7 +27,7 @@ function defineRelationships (resource, included, rules) {
 
         // Ignore nested relationships
         // i.e. - rooms have photos which are related to rooms
-        if (Array.isArray(rules.ignoreRelationships) && rules.ignoreRelationships.indexOf(originalRels[relationshipName].data.type) > -1) {
+        if (shouldMergeResourceAttributes(rules, originalRels[relationshipName].data.type)) {
           mergedRelationships[relationshipName] = originalRels[relationshipName].data;
           return;
         }
@@ -41,13 +39,15 @@ function defineRelationships (resource, included, rules) {
 
           forEach(originalRels[relationshipName].data, (item) => {
 
-            let relatedResource = find(included, {type: item.type, id: item.id});
-
             props[item.id] = {
               enumerable: true,
               get () {
 
-                return defineRelationships(relatedResource, included);
+                return compileRelationships(
+                  getRelatedResource(item, included),
+                  included,
+                  rules
+                );
               }
             };
           });
@@ -58,10 +58,11 @@ function defineRelationships (resource, included, rules) {
         // data is an Object, meaning it's a single item
         else {
 
-          let item = originalRels[relationshipName].data;
-          let relatedResource = find(included, {type: item.type, id: item.id});
-
-          mergedRelationships[relationshipName] = defineRelationships(relatedResource, included);
+          mergedRelationships[relationshipName] = compileRelationships(
+            getRelatedResource(originalRels[relationshipName].data, included),
+            included,
+            rules
+          );
         }
       });
 
@@ -75,4 +76,35 @@ function defineRelationships (resource, included, rules) {
   return resource;
 }
 
-export default defineRelationships;
+function getRelatedResource (item, included) {
+
+  let relatedResource;
+
+  // Already merged, compiled object
+  if(!Array.isArray(included)) {
+    let relItems = included[item.type];
+    if (!relItems) {
+      return;
+    }
+    relatedResource = relItems[item.id];
+  }
+
+  // Raw
+  else {
+    relatedResource = find(included, {type: item.type, id: item.id})
+  }
+
+  return relatedResource
+}
+
+function shouldMergeResourceAttributes (rules, type) {
+
+  return some(rules, (rule) => {
+
+    if (Array.isArray(rule.ignoreRelationships) && rule.ignoreRelationships.indexOf(type) > -1) {
+      return true;
+    }
+  });
+}
+
+export default compileRelationships;

@@ -99,18 +99,53 @@ test('ignore relationships in included resources', ({equal}) => {
   return resource
     .then((res) => {
 
-      // Data
-      // equal(
-      //   res.body.data.relationships.rooms[26098].relationships.photos[14941].relationships.room.attributes,
-      //   undefined,
-      //   'did not merge circular room reference in data object relationships'
-      // );
-
-      // Included
       equal(
         res.body.included.photos[14941].relationships.room.attributes,
         undefined,
-        'did not merge circular room referencein included object relationships'
+        'did not merge circular room reference'
+      );
+      equal(
+        res.body.included.photos[14941].relationships.room.__merged__,
+        undefined,
+        'never gets merged'
+      );
+      equal(
+        res.body.included.photos[14941].relationships.room.id,
+        '26098',
+        'keeps relationship id');
+    });
+});
+
+test('ignore relationships in resource data', ({equal}) => {
+
+  mockFetch.mock({
+    response: {
+      status: 200,
+      body: circularRefsData
+    }
+  });
+
+  let resource = endpoint({
+    uri: '/projects/1',
+    method: 'GET'
+  });
+
+  resource.include({
+    rooms: [
+      {
+        type: 'photos',
+        ignoreRelationships: ['rooms'] // singular or plural?
+      }
+    ]
+  });
+
+  return resource
+    .then((res) => {
+
+      equal(
+        res.body.data.relationships.rooms[26098].relationships.photos[14941].relationships.room.attributes,
+        undefined,
+        'did not merge circular room reference in data object relationships'
       );
       equal(
         res.body.included.photos[14941].relationships.room.__merged__,

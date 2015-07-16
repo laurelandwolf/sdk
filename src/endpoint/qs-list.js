@@ -26,7 +26,6 @@ function qslist (name) {
 
             // i.e. - {rooms: [{type: 'photos', ignoreRelationships: ['rooms']}]}
             if (isObject(type)) {
-
               type = val.type;
               includesWithOptions.push(val);
             }
