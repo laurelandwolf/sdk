@@ -12,7 +12,11 @@ let resources = [
   'designers',
   'rooms',
   'floor-plans',
-  'comments'
+  'comments',
+  'photos',
+  'inspiration-links',
+  'inspiration-images',
+  'furniture'
 ];
 
 let singletonResources = [
