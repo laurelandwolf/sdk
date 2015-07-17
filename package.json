@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
+    "test": "browserifyinc --cachefile .tmp/bundle.json test/*.js | tape-run --browser chrome | tap-spec",
     "test-ci": "zuul -- test/*.js",
     "lint": "lw lint src"
   },
@@ -13,9 +14,13 @@
   "devDependencies": {
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
+    "browserify-incremental": "^3.0.1",
     "is-promise": "^2.0.0",
     "lw-build": "laurelandwolf/build",
+    "tap-spec": "^4.0.2",
     "tape": "^4.0.0",
+    "tape-run": "^1.0.0",
+    "watchify": "^3.2.3",
     "zuul": "^3.2.0"
   },
   "dependencies": {
