@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
-    "test": "browserifyinc --cachefile .tmp/bundle.json test/*.js | tap-closer | smokestack --browser chrome | tap-spec",
+    "test": "npm run lint && browserifyinc --cachefile .tmp/bundle.json test/*.js | tap-closer | smokestack | tap-spec",
     "test-ci": "zuul -- test/*.js",
     "lint": "lw lint src"
   },

@@ -48,37 +48,41 @@ function compileRelationships (resource, included, rules = []) {
 
       forEach(Object.keys(originalRels), (relationshipName) => {
 
+        let originalRelData = originalRels[relationshipName].data;
+
         // Get/create reference to object tracking our merged relationships
         mergedRelationships[relationshipName] = mergedRelationships[relationshipName] || {};
 
         // Catches edge case where data is null or undefined
-        if (!originalRels[relationshipName].data) {
-          return originalRels[relationshipName].data;
+        if (!originalRelData) {
+          return originalRelData;
         }
 
         // Ignore nested relationships
         // i.e. - rooms have photos which are related to rooms
-        if (shouldMergeResourceAttributes(rules, originalRels[relationshipName].data.type)) {
-          mergedRelationships[relationshipName] = originalRels[relationshipName].data;
+        if (shouldMergeResourceAttributes(rules, originalRelData.type)) {
+          mergedRelationships[relationshipName] = originalRelData;
           return;
         }
 
         // data is an Array, meaning it's multiple items
-        if (Array.isArray(originalRels[relationshipName].data)) {
+        if (Array.isArray(originalRelData)) {
 
           let props = {};
 
-          forEach(originalRels[relationshipName].data, (item) => {
+          forEach(originalRelData, (item) => {
 
             props[item.id] = {
               enumerable: true,
               get () {
 
-                return compileRelationships(
+                let compiledRelationship = compileRelationships(
                   getRelatedResource(item, included),
                   included,
                   rules
                 );
+
+                return compiledRelationship || item;
               }
             };
           });
@@ -89,11 +93,16 @@ function compileRelationships (resource, included, rules = []) {
         // data is an Object, meaning it's a single item
         else {
 
-          mergedRelationships[relationshipName] = compileRelationships(
-            getRelatedResource(originalRels[relationshipName].data, included),
+          let compiledRelationship = compileRelationships(
+            getRelatedResource(originalRelData, included),
             included,
             rules
           );
+
+          // Ensure there is always data on the relationship
+          mergedRelationships[relationshipName] = compiledRelationship
+            ? compiledRelationship
+            : originalRelData;
         }
       });
 
