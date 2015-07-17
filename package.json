@@ -5,9 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
-    "test": "npm run lint && prova test/*.js -b -t babelify",
-    "test-ci": "prova test/*.js -b -l chrome -e -q",
-    "ci": "zuul -- test/*.js",
+    "test-ci": "zuul -- test/*.js",
     "lint": "lw lint src"
   },
   "author": "Laurel & Wolf",
@@ -17,6 +15,7 @@
     "browserify": "^10.2.4",
     "is-promise": "^2.0.0",
     "lw-build": "laurelandwolf/build",
+    "tape": "^4.0.0",
     "zuul": "^3.2.0"
   },
   "dependencies": {
