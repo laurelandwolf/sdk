@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "manual-test": "watchify spike/run.js -o spike/bundle.js -v -d",
-    "test": "npm run lint && prova test/*.js -b -t babelify",
-    "test-ci": "prova test/*.js -b -l chrome -e -q",
+    "test": "browserifyinc --cachefile .tmp/bundle.json test/*.js | tap-closer | smokestack --browser chrome | tap-spec",
+    "test-ci": "zuul -- test/*.js",
     "lint": "lw lint src"
   },
   "author": "Laurel & Wolf",
@@ -14,9 +14,15 @@
   "devDependencies": {
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
+    "browserify-incremental": "^3.0.1",
     "is-promise": "^2.0.0",
     "lw-build": "laurelandwolf/build",
-    "prova": "^2.1.2"
+    "smokestack": "^3.3.0",
+    "tap-closer": "^1.0.0",
+    "tap-spec": "^4.0.2",
+    "tape": "^4.0.0",
+    "watchify": "^3.2.3",
+    "zuul": "^3.2.0"
   },
   "dependencies": {
     "as-array": "^1.0.0",

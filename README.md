@@ -1,4 +1,4 @@
-# Laurel & Wolf JS SDK
+# Laurel & Wolf JS SDK [![Build Status](https://img.shields.io/travis/laurelandwolf/sdk.svg?style=flat-square)](https://travis-ci.org/laurelandwolf/sdk)
 
 JS SDK for Laurel & Wolf API
 

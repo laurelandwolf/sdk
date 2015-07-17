@@ -1,4 +1,4 @@
-import tape from 'prova';
+import tape from 'tape';
 import {merge, isFunction} from 'lodash';
 import isPromise from 'is-promise';
 
