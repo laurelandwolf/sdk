@@ -2,6 +2,8 @@ import serialize from '../src/serialize';
 import responseData from './mock/jsonapi-response';
 import arrayResponseData from './mock/jsonapi-response-array';
 import circularRefsData from './mock/circular-refs.json';
+import individualResponseSingleRelData from './mock/individual-response-single-rel';
+import individualResponseMultiRelData from './mock/individual-response-multi-rel';
 import {namespace} from './utils/testing';
 
 let test = namespace('serialize');
@@ -42,7 +44,7 @@ test.response('merges related included resources', ({equal}) => {
   equal(name, 'another', 'name');
 });
 
-test.response('merges realted incuded resources with circular relationships', ({pass, fail}) => {
+test.response('merges realated incuded resources with circular relationships', ({pass, fail}) => {
 
   try {
     let circularRes = serialize.response(circularRefsData);
@@ -51,6 +53,24 @@ test.response('merges realted incuded resources with circular relationships', ({
   catch (e) {
     fail(e.message);
   }
+});
+
+test.response('ignores relationship merge if a single related resource does not exist', ({deepEqual}) => {
+
+  let res = serialize.response(individualResponseSingleRelData);
+  deepEqual(res.data.relationships.room, {
+    type: 'rooms',
+    id: '26098'
+  }, 'relationship data');
+});
+
+test.response('ignores relationship merge if multiple related resource do not exist', ({deepEqual}) => {
+
+  let res = serialize.response(individualResponseMultiRelData);
+  deepEqual(res.data.relationships.room, {
+    '123': {type: 'rooms', id: '123'},
+    '456': {type: 'rooms', id: '456'}
+  }, 'relationship data');
 });
 
 test.response('uses resource id as key when included relationship data is an array', ({equal}) => {
@@ -71,6 +91,8 @@ test.response('should assign relationships to a key by relationship name, not ty
   notEqual(resMultiple.data[1].relationships.media[24], undefined, 'media exists');
 });
 
+
+//// Request
 
 test.request = test.namespace('request');
 

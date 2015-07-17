@@ -1,0 +1,21 @@
+{
+  "data": {
+    "id": "10",
+    "type": "inspiration-images",
+    "attributes": {
+      "image": {
+        "original": "/system/inspiration/images/images/000/000/010/original/uploads_2F1437156879044-66x49ptgu89cc8fr-pmuf4du7tghtcsor_2F4th-of-july-animals-1-2-5-6-8-0-5-4-1.png?1437156880"
+      },
+      "created-at": "2015-07-17T11:14:40.692-07:00",
+      "updated-at": "2015-07-17T11:14:40.692-07:00"
+    },
+    "relationships": {
+      "room": {
+        "data": {
+          "type": "rooms",
+          "id": "26098"
+        }
+      }
+    }
+  }
+}
