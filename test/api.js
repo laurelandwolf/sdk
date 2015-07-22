@@ -16,6 +16,10 @@ let resources = [
   'photos',
   'inspiration-links',
   'inspiration-images',
+  'design-package-floor-plans',
+  'style-boards',
+  'style-board-tags',
+  'design-package-instructions',
   'furniture'
 ];
 
