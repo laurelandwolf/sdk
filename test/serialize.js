@@ -4,6 +4,7 @@ import arrayResponseData from './mock/jsonapi-response-array';
 import circularRefsData from './mock/circular-refs.json';
 import individualResponseSingleRelData from './mock/individual-response-single-rel';
 import individualResponseMultiRelData from './mock/individual-response-multi-rel';
+import responseDataNoRelationships from './mock/jsonapi-response-no-rel';
 import {namespace} from './utils/testing';
 
 let test = namespace('serialize');
@@ -14,6 +15,12 @@ let req = serialize.request(mockRequestInput());
 test.response('sets getter for main data relationships', ({ok}) => {
 
   ok(res.data.relationships, 'relationships exists');
+});
+
+test.response('returns {} for relationships if none exist', ({deepEqual}) => {
+
+  let resNoRelationships = serialize.response(responseDataNoRelationships);
+  deepEqual(resNoRelationships.data.relationships, {}, 'is empty object');
 });
 
 test.response('sets getter for included resources', ({ok}) => {

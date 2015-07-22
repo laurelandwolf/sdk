@@ -1,0 +1,13 @@
+{
+  "data": {
+    "type": "projects",
+    "id": 1,
+    "attributes": {},
+  },
+  "errors": {},
+  "meta": {},
+  "links": {
+    "self": "",
+    "related": {}
+  }
+};

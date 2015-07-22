@@ -46,6 +46,10 @@ function compileRelationships (resource, included, rules = []) {
 
       let mergedRelationships = {};
 
+      if (!originalRels) {
+        return {};
+      }
+
       forEach(Object.keys(originalRels), (relationshipName) => {
 
         let originalRelData = originalRels[relationshipName].data;
