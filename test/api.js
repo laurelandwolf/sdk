@@ -20,7 +20,8 @@ let resources = [
   'style-boards',
   'style-board-tags',
   'design-package-instructions',
-  'furniture'
+  'furniture',
+  'design-packages'
 ];
 
 let singletonResources = [

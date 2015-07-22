@@ -69,6 +69,10 @@ function api (config = {}) {
     type: 'design-package-instructions'
   });
 
+  let designPackages = makeResource({
+    type: 'design-packages'
+  });
+
 
   //// Singletons
 
@@ -104,6 +108,7 @@ function api (config = {}) {
     styleBoards,
     styleBoardTags,
     designPackageInstructions,
+    designPackages,
 
     // Singletons
     recipient,
