@@ -53,6 +53,25 @@ function api (config = {}) {
     type: 'furniture'
   });
 
+  let designPackageFloorPlans = makeResource({
+    type: 'design-package-floor-plans'
+  });
+
+  let styleBoards = makeResource({
+    type: 'style-boards'
+  });
+
+  let styleBoardTags = makeResource({
+    type: 'style-board-tags'
+  });
+
+  let designPackageInstructions = makeResource({
+    type: 'design-package-instructions'
+  });
+
+
+  //// Singletons
+
   let recipient = makeResource({
     type: 'recipient',
     singleton: true
@@ -81,6 +100,10 @@ function api (config = {}) {
     inspirationLinks,
     inspirationImages,
     furniture,
+    designPackageFloorPlans,
+    styleBoards,
+    styleBoardTags,
+    designPackageInstructions,
 
     // Singletons
     recipient,
