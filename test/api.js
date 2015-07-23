@@ -21,7 +21,9 @@ let resources = [
   'style-board-tags',
   'design-package-instructions',
   'furniture',
-  'design-packages'
+  'design-packages',
+  'portfolio-images',
+  'media'
 ];
 
 let singletonResources = [

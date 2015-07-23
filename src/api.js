@@ -73,6 +73,13 @@ function api (config = {}) {
     type: 'design-packages'
   });
 
+  let portfolioImages = makeResource({
+    type: 'portfolio-images'
+  });
+
+  let medias = makeResource({
+    type: 'media'
+  });
 
   //// Singletons
 
@@ -109,6 +116,8 @@ function api (config = {}) {
     styleBoardTags,
     designPackageInstructions,
     designPackages,
+    portfolioImages,
+    medias,
 
     // Singletons
     recipient,
