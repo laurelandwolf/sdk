@@ -23,7 +23,8 @@ let resources = [
   'furniture',
   'design-packages',
   'portfolio-images',
-  'media'
+  'media',
+  'shopping-list-items'
 ];
 
 let singletonResources = [

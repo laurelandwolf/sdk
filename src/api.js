@@ -81,6 +81,10 @@ function api (config = {}) {
     type: 'media'
   });
 
+  let shoppinglistItems = makeResource({
+    type: 'shopping-list-items'
+  });
+
   //// Singletons
 
   let recipient = makeResource({
@@ -118,6 +122,7 @@ function api (config = {}) {
     designPackages,
     portfolioImages,
     medias,
+    shoppinglistItems,
 
     // Singletons
     recipient,
