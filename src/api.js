@@ -73,6 +73,9 @@ function api (config = {}) {
     type: 'design-packages'
   });
 
+  let shoppinglistItems = makeResource({
+    type: 'shopping-list-items'
+  });
 
   //// Singletons
 
@@ -109,6 +112,7 @@ function api (config = {}) {
     styleBoardTags,
     designPackageInstructions,
     designPackages,
+    shoppinglistItems,
 
     // Singletons
     recipient,
