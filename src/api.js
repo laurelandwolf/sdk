@@ -73,6 +73,14 @@ function api (config = {}) {
     type: 'design-packages'
   });
 
+  let portfolioImages = makeResource({
+    type: 'portfolio-images'
+  });
+
+  let medias = makeResource({
+    type: 'media'
+  });
+
   let shoppinglistItems = makeResource({
     type: 'shopping-list-items'
   });
@@ -112,6 +120,8 @@ function api (config = {}) {
     styleBoardTags,
     designPackageInstructions,
     designPackages,
+    portfolioImages,
+    medias,
     shoppinglistItems,
 
     // Singletons

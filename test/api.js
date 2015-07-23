@@ -22,6 +22,8 @@ let resources = [
   'design-package-instructions',
   'furniture',
   'design-packages',
+  'portfolio-images',
+  'media',
   'shopping-list-items'
 ];
 
