@@ -24,7 +24,8 @@ let resources = [
   'design-packages',
   'portfolio-images',
   'media',
-  'shopping-list-items'
+  'shopping-list-items',
+  'users'
 ];
 
 let singletonResources = [
