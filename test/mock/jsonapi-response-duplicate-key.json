@@ -1,0 +1,401 @@
+{
+  "data": {
+    "id": "15038",
+    "type": "projects",
+    "attributes": {
+      "title": "Scott's Living Room",
+      "style": "modern",
+      "package": "classic",
+      "location": "",
+      "timeline": null,
+      "other-details": "qwef",
+      "state": "launched",
+      "submission-state": "open",
+      "revision-state": "closed",
+      "household-size": "4",
+      "reason": [
+        "upgrade",
+        "baby"
+      ],
+      "home-ownership": "own",
+      "access": "stairs",
+      "moving-details": null,
+      "pets": "both",
+      "children": null,
+      "preferred-stores": null,
+      "rejected-stores": null,
+      "created-at": "2015-03-24T11:58:34.861-07:00",
+      "updated-at": "2015-07-27T14:58:14.442-07:00"
+    },
+    "relationships": {
+      "submission-room": {
+        "data": null
+      },
+      "design-package": {
+        "data": {
+          "type": "design-packages",
+          "id": "458"
+        }
+      },
+      "winner": {
+        "data": null
+      },
+      "logo": {
+        "data": null
+      },
+      "rooms": {
+        "data": [
+          {
+            "type": "rooms",
+            "id": "26098"
+          }
+        ]
+      },
+      "comments": {
+        "data": [
+          {
+            "type": "comments",
+            "id": "6608"
+          },
+          {
+            "type": "comments",
+            "id": "6609"
+          }
+        ]
+      },
+      "floor-plans": {
+        "data": [
+          {
+            "type": "floor-plans",
+            "id": "1"
+          }
+        ]
+      },
+      "submissions": {
+        "data": []
+      }
+    }
+  },
+  "included": [
+    {
+      "id": "26098",
+      "type": "rooms",
+      "attributes": {
+        "title": "Living Room",
+        "room-type": "living_room",
+        "budget": null,
+        "length": "123.0",
+        "width": "123.0",
+        "height": "0.0",
+        "other-details": null,
+        "designed-for": null,
+        "room-uses": [],
+        "room-feels": [
+          "cozy",
+          "formal"
+        ],
+        "seating": "large",
+        "shares": [
+          "partner",
+          "kids"
+        ],
+        "repaint": "no",
+        "wallpaper": "no",
+        "window-coverings": null,
+        "preferred-color": null,
+        "dimensions-text": "Room dimensions: 123L x 123W",
+        "created-at": "2015-03-24T11:58:34.868-07:00",
+        "updated-at": "2015-07-27T14:58:14.441-07:00"
+      },
+      "relationships": {
+        "inspiration-links": {
+          "data": [
+            {
+              "type": "inspiration-links",
+              "id": "1"
+            }
+          ]
+        },
+        "inspiration-images": {
+          "data": [
+            {
+              "type": "inspiration-images",
+              "id": "1"
+            }
+          ]
+        },
+        "photos": {
+          "data": [
+            {
+              "type": "photos",
+              "id": "18418"
+            }
+          ]
+        },
+        "furniture": {
+          "data": [
+            {
+              "type": "furniture",
+              "id": "18419"
+            }
+          ]
+        },
+        "project": {
+          "data": {
+            "type": "projects",
+            "id": "15038"
+          }
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "inspiration-links",
+      "attributes": {
+        "url": "wef",
+        "created-at": "2015-07-27T14:31:05.070-07:00",
+        "updated-at": "2015-07-27T14:31:05.070-07:00"
+      },
+      "relationships": {
+        "room": {
+          "data": {
+            "type": "rooms",
+            "id": "26098"
+          }
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "inspiration-images",
+      "attributes": {
+        "created-at": "2015-07-27T14:31:00.204-07:00",
+        "updated-at": "2015-07-27T14:31:05.605-07:00"
+      },
+      "relationships": {
+        "room": {
+          "data": {
+            "type": "rooms",
+            "id": "26098"
+          }
+        },
+        "image": {
+          "data": {
+            "type": "documents",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "documents",
+      "attributes": {
+        "direct-upload-url": "https://s3-us-west-2.amazonaws.com/decoraid-qa/uploads/1438032656999-xif0kvld84ed0a4i-fjunddrmev5tgldi/exec_family_room.jpg",
+        "processed": true,
+        "large-url": "/system/inspiration/images/images/000/000/001/large/exec_family_room.jpg?1438032664",
+        "thumbnail-url": "/system/inspiration/images/images/000/000/001/thumbnail/exec_family_room.jpg?1438032664",
+        "original-url": "/system/inspiration/images/images/000/000/001/original/exec_family_room.jpg?1438032664",
+        "created-at": "2015-07-27T14:31:00.204-07:00",
+        "updated-at": "2015-07-27T14:31:05.605-07:00"
+      }
+    },
+    {
+      "id": "18418",
+      "type": "photos",
+      "attributes": {
+        "body": "qwef",
+        "created-at": "2015-07-27T14:31:11.292-07:00",
+        "updated-at": "2015-07-27T14:31:17.765-07:00"
+      },
+      "relationships": {
+        "room": {
+          "data": {
+            "type": "rooms",
+            "id": "26098"
+          }
+        },
+        "image": {
+          "data": {
+            "type": "documents",
+            "id": "18418"
+          }
+        }
+      }
+    },
+    {
+      "id": "18418",
+      "type": "documents",
+      "attributes": {
+        "direct-upload-url": "https://s3-us-west-2.amazonaws.com/decoraid-qa/uploads/1438032669334-gx3xayw54jejnhfr-vwp1jylp79wl8fr/exec_family_room.jpg",
+        "processed": true,
+        "square-url": "/system/current_room_photos/images/000/018/418/square/exec_family_room.jpg?1438032677",
+        "small-url": "/system/current_room_photos/images/000/018/418/small/exec_family_room.jpg?1438032677",
+        "large-url": "/system/current_room_photos/images/000/018/418/large/exec_family_room.jpg?1438032677",
+        "original-url": "/system/current_room_photos/images/000/018/418/original/exec_family_room.jpg?1438032677",
+        "created-at": "2015-07-27T14:31:11.292-07:00",
+        "updated-at": "2015-07-27T14:31:17.765-07:00"
+      }
+    },
+    {
+      "id": "18419",
+      "type": "furniture",
+      "attributes": {
+        "body": "qwef",
+        "created-at": "2015-07-27T14:58:10.779-07:00",
+        "updated-at": "2015-07-27T14:58:14.423-07:00"
+      },
+      "relationships": {
+        "room": {
+          "data": {
+            "type": "rooms",
+            "id": "26098"
+          }
+        },
+        "image": {
+          "data": {
+            "type": "documents",
+            "id": "18419"
+          }
+        }
+      }
+    },
+    {
+      "id": "18419",
+      "type": "documents",
+      "attributes": {
+        "direct-upload-url": "https://s3-us-west-2.amazonaws.com/decoraid-qa/uploads/1438034288621-rpz8vcl6e0t138fr-lscii33l4pjy8pvi/exec_family_room.jpg",
+        "processed": true,
+        "square-url": "/system/furniture_to_keeps/images/000/018/419/square/exec_family_room.jpg?1438034292",
+        "small-url": "/system/furniture_to_keeps/images/000/018/419/small/exec_family_room.jpg?1438034292",
+        "large-url": "/system/furniture_to_keeps/images/000/018/419/large/exec_family_room.jpg?1438034292",
+        "original-url": "/system/furniture_to_keeps/images/000/018/419/original/exec_family_room.jpg?1438034292",
+        "created-at": "2015-07-27T14:58:10.779-07:00",
+        "updated-at": "2015-07-27T14:58:14.423-07:00"
+      }
+    },
+    {
+      "id": "6608",
+      "type": "comments",
+      "attributes": {
+        "body": "qwef",
+        "created-at": "2015-07-27T14:58:40.690-07:00",
+        "updated-at": "2015-07-27T14:58:40.690-07:00"
+      },
+      "relationships": {
+        "commenter": {
+          "data": {
+            "type": "users",
+            "id": "21587"
+          }
+        },
+        "image": {
+          "data": null
+        },
+        "parent": {
+          "data": null
+        },
+        "children": {
+          "data": []
+        }
+      }
+    },
+    {
+      "id": "21587",
+      "type": "users",
+      "attributes": {
+        "name": "Scott Corgan",
+        "first-name": "Scott",
+        "last-name": "Corgan",
+        "display-name": "Scott Corgan",
+        "email": "scottcorgan@gmail.com",
+        "phone-number": null,
+        "address-street": null,
+        "address-city": null,
+        "address-state": null,
+        "address-zip-code": null,
+        "created-at": "2015-03-24T11:58:20.372-07:00",
+        "updated-at": "2015-07-27T14:58:54.765-07:00"
+      },
+      "relationships": {
+        "projects": {
+          "data": [
+            {
+              "type": "projects",
+              "id": "15038"
+            },
+            {
+              "type": "projects",
+              "id": "28135"
+            },
+            {
+              "type": "projects",
+              "id": "29561"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6609",
+      "type": "comments",
+      "attributes": {
+        "body": "wetret",
+        "created-at": "2015-07-27T14:58:44.994-07:00",
+        "updated-at": "2015-07-27T14:58:44.994-07:00"
+      },
+      "relationships": {
+        "commenter": {
+          "data": {
+            "type": "users",
+            "id": "21587"
+          }
+        },
+        "image": {
+          "data": null
+        },
+        "parent": {
+          "data": null
+        },
+        "children": {
+          "data": []
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "floor-plans",
+      "attributes": {
+        "created-at": "2015-07-27T14:31:35.343-07:00",
+        "updated-at": "2015-07-27T14:31:42.999-07:00"
+      },
+      "relationships": {
+        "project": {
+          "data": {
+            "type": "projects",
+            "id": "15038"
+          }
+        },
+        "image": {
+          "data": {
+            "type": "documents",
+            "id": "1"
+          }
+        }
+      }
+    },
+    {
+      "id": "1",
+      "type": "documents",
+      "attributes": {
+        "direct-upload-url": "https://s3-us-west-2.amazonaws.com/decoraid-qa/uploads/1438032693251-wg34axwwp1awnrk9-w7jj4v2nlyyfd2t9/exec_family_room.jpg",
+        "processed": true,
+        "large-url": "/system/project/floor_plans/images/000/000/001/large/exec_family_room.jpg?1438032702",
+        "thumbnail-url": "/system/project/floor_plans/images/000/000/001/thumbnail/exec_family_room.jpg?1438032702",
+        "original-url": "/system/project/floor_plans/images/000/000/001/original/exec_family_room.jpg?1438032702",
+        "created-at": "2015-07-27T14:31:35.343-07:00",
+        "updated-at": "2015-07-27T14:31:42.999-07:00"
+      }
+    }
+  ]
+}

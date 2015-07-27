@@ -29,6 +29,11 @@ function serializeResponse (originalResponse, options = {}) {
 
         root[resource.type] = root[resource.type] || {};
 
+        // Don't overwrite key that already exists
+        if (root[resource.type] && root[resource.type][resource.id]) {
+          return root;
+        }
+
         Object.defineProperty(root[resource.type], resource.id, {
           enumerable: true,
           get () {

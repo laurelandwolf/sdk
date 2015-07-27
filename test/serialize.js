@@ -5,6 +5,7 @@ import circularRefsData from './mock/circular-refs.json';
 import individualResponseSingleRelData from './mock/individual-response-single-rel';
 import individualResponseMultiRelData from './mock/individual-response-multi-rel';
 import responseDataNoRelationships from './mock/jsonapi-response-no-rel';
+import repsonseDuplicateKey from './mock/jsonapi-response-duplicate-key';
 import {namespace} from './utils/testing';
 
 let test = namespace('serialize');
@@ -84,6 +85,18 @@ test.response('uses resource id as key when included relationship data is an arr
 
   let name = res.included.list[9876].relationships.author[123].attributes.name;
   equal(name, 'another', 'name');
+});
+
+test.response('does not overwrite key if it already exists', ({pass, fail}) => {
+
+  try {
+    let res = serialize.response(repsonseDuplicateKey);
+    res.data.relationships.documents;
+    pass('ignored duplicate keys');
+  }
+  catch (e) {
+    fail(e.message);
+  }
 });
 
 test.response('should assign relationships to a key by relationship name, not type name', ({notEqual}) => {
