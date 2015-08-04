@@ -1,4 +1,4 @@
-import {omit, merge, pick} from 'lodash';
+import {omit, merge, pick, get as _get} from 'lodash';
 import {Promise} from 'es6-promise';
 import joinPath from 'join-path';
 
@@ -34,7 +34,12 @@ function request (spec = {}) {
             });
           }
           else {
-            response.json().then((body) => {
+            let contentType = 'json';
+            let contentTypeGetter = _get(response, 'headers.get');
+            if (contentTypeGetter) {
+              contentType = response.headers.get('content-type').indexOf('vnd.api+json') > -1 ? 'json' : 'text';
+            }
+            response[contentType]().then((body) => {
 
               if (response.status < 400) {
                 resolve({
