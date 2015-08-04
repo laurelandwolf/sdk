@@ -29,12 +29,19 @@ function mockedFetch (_config_ = {}) {
 
       // Defaults to responding with the original config
       let body = res.body !== undefined ? res.body : config;
+      let json = JSONPromise(body);
+      let text;
+      if (res.headers && res.headers.get && res.headers.get('content-type').indexOf('text/plain') !== -1) {
+        json = undefined;
+        text = JSONPromise(body);
+      }
 
       let response = {
         status: res.status || 200,
         statusText: res.statusText,
         headers: res.headers,
-        json: JSONPromise(body)
+        json,
+        text
       };
 
       resolve(response);

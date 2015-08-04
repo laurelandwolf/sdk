@@ -111,3 +111,23 @@ test('headers', ({deepEqual}) => {
     }, 'custom headers');
   });
 });
+
+test('non-json responses', ({equal}) => {
+
+  let headers = new Headers();
+  headers.append("Content-Type", "text/plain");
+
+  mockFetch.restore();
+  mockFetch.mock({
+    response: {
+      headers,
+      body: 'Fail'
+    }
+  });
+
+
+  return request().get().then((res) => {
+
+    equal(res.body, 'Fail', 'should parse correctly');
+  });
+});
