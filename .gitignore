@@ -2,3 +2,4 @@ node_modules
 spike
 npm-debug.*
 .tmp
+dist
