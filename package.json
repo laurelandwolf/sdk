@@ -1,6 +1,6 @@
 {
   "name": "lw-sdk",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "SDK for Laurel & Wolf API",
   "main": "dist/index.js",
   "scripts": {
