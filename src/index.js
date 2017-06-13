@@ -8,6 +8,22 @@ import api from './api';
 import serialize from './serialize';
 import format from './format';
 
+function configGlobalSpec (globalSpec) {
+
+  let headers
+  if (typeof globalSpec.headers === 'function') {
+    headers = globalSpec.headers()
+  }
+  else {
+    headers = globalSpec.headers
+  }
+
+  return {
+    ...globalSpec,
+    headers
+  }
+}
+
 export default function sdk (globalSpec = {}) {
 
   let defaultSpec = {
@@ -17,7 +33,7 @@ export default function sdk (globalSpec = {}) {
       'Accept': 'application/vnd.api+json'
     }
   };
-  let configuredSpec = merge(defaultSpec, globalSpec);
+  let configuredSpec = merge(defaultSpec, configGlobalSpec(globalSpec));
 
   function apiFactory (instanceSpec = {}) {
 
